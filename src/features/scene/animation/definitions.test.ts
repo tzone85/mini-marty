@@ -134,7 +134,9 @@ describe("getSequenceForAction", () => {
   });
 
   it("returns stand_straight sequence", () => {
-    expect(getSequenceForAction("stand_straight")).toBe(STAND_STRAIGHT_SEQUENCE);
+    expect(getSequenceForAction("stand_straight")).toBe(
+      STAND_STRAIGHT_SEQUENCE,
+    );
   });
 
   it("returns eyes sequence for normal position", () => {

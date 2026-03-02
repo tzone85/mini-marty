@@ -79,9 +79,7 @@ function interpolateSequence(
 
   const segmentDuration = after.time - before.time;
   const segmentProgress =
-    segmentDuration > 0
-      ? (clampedProgress - before.time) / segmentDuration
-      : 0;
+    segmentDuration > 0 ? (clampedProgress - before.time) / segmentDuration : 0;
 
   return lerpPose(before.pose, after.pose, segmentProgress);
 }

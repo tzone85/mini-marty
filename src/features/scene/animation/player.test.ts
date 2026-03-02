@@ -7,7 +7,11 @@ import {
   lerpPose,
   interpolateSequence,
 } from "./player";
-import { DEFAULT_POSE, DEFAULT_JOINT_ANGLES, DEFAULT_EYE_STATE } from "../types";
+import {
+  DEFAULT_POSE,
+  DEFAULT_JOINT_ANGLES,
+  DEFAULT_EYE_STATE,
+} from "../types";
 import type { AnimationSequence } from "./types";
 
 describe("lerp utilities", () => {
@@ -67,7 +71,11 @@ describe("lerp utilities", () => {
 
 describe("interpolateSequence", () => {
   it("returns DEFAULT_POSE for empty keyframes", () => {
-    const seq: AnimationSequence = { keyframes: [], loop: false, durationMs: 1000 };
+    const seq: AnimationSequence = {
+      keyframes: [],
+      loop: false,
+      durationMs: 1000,
+    };
     expect(interpolateSequence(seq, 0.5)).toEqual(DEFAULT_POSE);
   });
 

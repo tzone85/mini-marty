@@ -22,24 +22,18 @@ describe("useMartyAnimation", () => {
   });
 
   it("returns idle action initially", () => {
-    const { result } = renderHook(() =>
-      useMartyAnimation({ marty }),
-    );
+    const { result } = renderHook(() => useMartyAnimation({ marty }));
     expect(result.current.currentAction).toBe("idle");
     expect(result.current.isAnimating).toBe(false);
   });
 
   it("provides onModelReady callback", () => {
-    const { result } = renderHook(() =>
-      useMartyAnimation({ marty }),
-    );
+    const { result } = renderHook(() => useMartyAnimation({ marty }));
     expect(result.current.onModelReady).toBeTypeOf("function");
   });
 
   it("starts animating when command starts", async () => {
-    const { result } = renderHook(() =>
-      useMartyAnimation({ marty }),
-    );
+    const { result } = renderHook(() => useMartyAnimation({ marty }));
 
     act(() => {
       marty.walk(2, 50);
@@ -52,9 +46,7 @@ describe("useMartyAnimation", () => {
   });
 
   it("stops animating when command completes", async () => {
-    const { result } = renderHook(() =>
-      useMartyAnimation({ marty }),
-    );
+    const { result } = renderHook(() => useMartyAnimation({ marty }));
 
     let walkPromise: Promise<void>;
     act(() => {
@@ -75,20 +67,19 @@ describe("useMartyAnimation", () => {
 
   it("cleans up listeners on unmount", () => {
     const offSpy = vi.spyOn(marty, "off");
-    const { unmount } = renderHook(() =>
-      useMartyAnimation({ marty }),
-    );
+    const { unmount } = renderHook(() => useMartyAnimation({ marty }));
 
     unmount();
 
     expect(offSpy).toHaveBeenCalledWith("commandStart", expect.any(Function));
-    expect(offSpy).toHaveBeenCalledWith("commandComplete", expect.any(Function));
+    expect(offSpy).toHaveBeenCalledWith(
+      "commandComplete",
+      expect.any(Function),
+    );
   });
 
   it("handles null marty without error", () => {
-    const { result } = renderHook(() =>
-      useMartyAnimation({ marty: null }),
-    );
+    const { result } = renderHook(() => useMartyAnimation({ marty: null }));
     expect(result.current.currentAction).toBe("idle");
     expect(result.current.isAnimating).toBe(false);
   });
@@ -100,9 +91,7 @@ describe("useMartyAnimation", () => {
       getRootRef: () => null,
     };
 
-    const { result } = renderHook(() =>
-      useMartyAnimation({ marty }),
-    );
+    const { result } = renderHook(() => useMartyAnimation({ marty }));
 
     act(() => {
       result.current.onModelReady(mockHandle);

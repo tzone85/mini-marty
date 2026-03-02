@@ -116,6 +116,40 @@ describe("BlocklyWorkspace", () => {
     expect(mockLoad).not.toHaveBeenCalled();
   });
 
+  it("passes the correct parsed state and workspace to load", async () => {
+    const savedState = { blocks: { languageVersion: 0, blocks: [] } };
+    localStorage.setItem("mini-marty-blocks", JSON.stringify(savedState));
+    const user = userEvent.setup();
+    render(<BlocklyWorkspace />);
+
+    await user.click(screen.getByRole("button", { name: /load/i }));
+    expect(mockLoad).toHaveBeenCalledWith(savedState, mockWorkspace);
+  });
+
+  it("handles corrupt JSON in localStorage gracefully", async () => {
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    localStorage.setItem("mini-marty-blocks", "not{valid-json");
+    const user = userEvent.setup();
+    render(<BlocklyWorkspace />);
+
+    await user.click(screen.getByRole("button", { name: /load/i }));
+    expect(mockLoad).not.toHaveBeenCalled();
+    expect(consoleSpy).toHaveBeenCalledWith(
+      "Failed to load workspace:",
+      expect.any(SyntaxError),
+    );
+    consoleSpy.mockRestore();
+  });
+
+  it("does not call serialization.load when localStorage value is empty string", async () => {
+    localStorage.setItem("mini-marty-blocks", "");
+    const user = userEvent.setup();
+    render(<BlocklyWorkspace />);
+
+    await user.click(screen.getByRole("button", { name: /load/i }));
+    expect(mockLoad).not.toHaveBeenCalled();
+  });
+
   it("disposes workspace on unmount", () => {
     const { unmount } = render(<BlocklyWorkspace />);
     unmount();

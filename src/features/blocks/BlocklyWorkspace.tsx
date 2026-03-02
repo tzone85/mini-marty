@@ -18,7 +18,7 @@ export function BlocklyWorkspace() {
       MARTY_BLOCKS as unknown as Record<string, unknown>[],
     );
 
-    const workspace = Blockly.inject(containerRef.current, {
+    workspaceRef.current = Blockly.inject(containerRef.current, {
       toolbox:
         TOOLBOX_CONFIG as unknown as Blockly.utils.toolbox.ToolboxDefinition,
       grid: {
@@ -38,10 +38,8 @@ export function BlocklyWorkspace() {
       trashcan: true,
     });
 
-    workspaceRef.current = workspace;
-
     return () => {
-      workspace.dispose();
+      workspaceRef.current?.dispose();
       workspaceRef.current = null;
     };
   }, []);

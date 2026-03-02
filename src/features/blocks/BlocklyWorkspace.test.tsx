@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { BlocklyWorkspace } from "./BlocklyWorkspace";
 
-const mockInject = vi.fn();
 const mockDispose = vi.fn();
 const mockUndo = vi.fn();
 const mockSave = vi.fn().mockReturnValue({ blocks: {} });
@@ -16,10 +15,11 @@ const mockWorkspace = {
   getAllBlocks: () => [],
 };
 
+const mockInject = vi.fn().mockReturnValue(mockWorkspace);
+
 vi.mock("blockly", () => ({
   inject: (...args: unknown[]) => {
-    mockInject(...args);
-    return mockWorkspace;
+    return mockInject(...args);
   },
   defineBlocksWithJsonArray: (...args: unknown[]) => {
     mockDefineBlocksWithJsonArray(...args);
@@ -35,6 +35,7 @@ vi.mock("blockly", () => ({
 describe("BlocklyWorkspace", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockInject.mockReturnValue(mockWorkspace);
     localStorage.clear();
   });
 
@@ -105,5 +106,58 @@ describe("BlocklyWorkspace", () => {
 
     await user.click(screen.getByRole("button", { name: /redo/i }));
     expect(mockUndo).toHaveBeenCalledWith(true);
+  });
+
+  it("does not call serialization.load when localStorage is empty", async () => {
+    const user = userEvent.setup();
+    render(<BlocklyWorkspace />);
+
+    await user.click(screen.getByRole("button", { name: /load/i }));
+    expect(mockLoad).not.toHaveBeenCalled();
+  });
+
+  it("disposes workspace on unmount", () => {
+    const { unmount } = render(<BlocklyWorkspace />);
+    unmount();
+    expect(mockDispose).toHaveBeenCalled();
+  });
+
+  describe("when workspace is not initialized", () => {
+    beforeEach(() => {
+      mockInject.mockReturnValue(null);
+    });
+
+    it("save is a no-op without workspace", async () => {
+      const user = userEvent.setup();
+      render(<BlocklyWorkspace />);
+
+      await user.click(screen.getByRole("button", { name: /save/i }));
+      expect(mockSave).not.toHaveBeenCalled();
+    });
+
+    it("load is a no-op without workspace", async () => {
+      localStorage.setItem("mini-marty-blocks", JSON.stringify({ blocks: {} }));
+      const user = userEvent.setup();
+      render(<BlocklyWorkspace />);
+
+      await user.click(screen.getByRole("button", { name: /load/i }));
+      expect(mockLoad).not.toHaveBeenCalled();
+    });
+
+    it("undo is a no-op without workspace", async () => {
+      const user = userEvent.setup();
+      render(<BlocklyWorkspace />);
+
+      await user.click(screen.getByRole("button", { name: /undo/i }));
+      expect(mockUndo).not.toHaveBeenCalled();
+    });
+
+    it("redo is a no-op without workspace", async () => {
+      const user = userEvent.setup();
+      render(<BlocklyWorkspace />);
+
+      await user.click(screen.getByRole("button", { name: /redo/i }));
+      expect(mockUndo).not.toHaveBeenCalled();
+    });
   });
 });

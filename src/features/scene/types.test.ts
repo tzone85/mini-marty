@@ -5,7 +5,13 @@ import {
   DEFAULT_POSE,
   DEFAULT_SCENE_CONFIG,
 } from "./types";
-import type { JointAngles, EyeState, MartyPose, SceneConfig, JointName } from "./types";
+import type {
+  JointAngles,
+  EyeState,
+  MartyPose,
+  SceneConfig,
+  JointName,
+} from "./types";
 
 describe("scene types", () => {
   describe("DEFAULT_JOINT_ANGLES", () => {

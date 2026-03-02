@@ -27,7 +27,8 @@ export function MartyScene({
   const handleRef = useCallback(
     (handle: MartyModelHandle | null) => {
       if (handle) {
-        (modelRef as React.MutableRefObject<MartyModelHandle | null>).current = handle;
+        (modelRef as React.MutableRefObject<MartyModelHandle | null>).current =
+          handle;
         onModelReady?.(handle);
       }
     },

@@ -78,10 +78,7 @@ describe("MartyScene", () => {
 
   it("applies default camera FOV", () => {
     render(<MartyScene />);
-    expect(screen.getByTestId("r3f-canvas")).toHaveAttribute(
-      "data-fov",
-      "50",
-    );
+    expect(screen.getByTestId("r3f-canvas")).toHaveAttribute("data-fov", "50");
   });
 
   it("allows overriding background color", () => {

@@ -9,9 +9,4 @@ export {
   DEFAULT_JOINT_ANGLES,
   DEFAULT_EYE_STATE,
 } from "./types";
-export type {
-  JointAngles,
-  EyeState,
-  SceneConfig,
-  JointName,
-} from "./types";
+export type { JointAngles, EyeState, SceneConfig, JointName } from "./types";

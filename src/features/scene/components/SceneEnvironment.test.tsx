@@ -9,10 +9,7 @@ vi.mock("@react-three/drei", () => ({
     </div>
   ),
   OrbitControls: (props: Record<string, unknown>) => (
-    <div
-      data-testid="orbit-controls"
-      data-enable-pan={String(props.enablePan)}
-    >
+    <div data-testid="orbit-controls" data-enable-pan={String(props.enablePan)}>
       OrbitControls
     </div>
   ),

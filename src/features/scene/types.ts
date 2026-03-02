@@ -11,8 +11,16 @@ export interface JointAngles {
 }
 
 export interface EyeState {
-  readonly left: { readonly x: number; readonly y: number; readonly scale: number };
-  readonly right: { readonly x: number; readonly y: number; readonly scale: number };
+  readonly left: {
+    readonly x: number;
+    readonly y: number;
+    readonly scale: number;
+  };
+  readonly right: {
+    readonly x: number;
+    readonly y: number;
+    readonly scale: number;
+  };
 }
 
 export interface MartyPose {

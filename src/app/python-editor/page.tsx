@@ -1,14 +1,30 @@
+"use client";
+
+import { PythonEditor } from "@/features/editor/components/PythonEditor";
+import { EditorToolbar } from "@/features/editor/components/EditorToolbar";
+import { usePythonEditor } from "@/features/editor/hooks/usePythonEditor";
+
 export default function PythonEditorPage() {
+  const { code, setCode, isRunning, clearCode, saveCode, loadCode, run, stop } =
+    usePythonEditor();
+
   return (
-    <div className="flex flex-col p-6">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-        Python Editor
-      </h1>
-      <p className="mt-2 text-gray-600 dark:text-gray-300">
-        Write Python code to control Marty the robot.
-      </p>
-      <div className="mt-6 flex-1 rounded-lg border border-dashed border-gray-300 p-8 text-center text-gray-400 dark:border-gray-600 dark:text-gray-500">
-        Monaco editor will be rendered here
+    <div className="flex h-full flex-col">
+      <div className="flex items-center justify-between px-4 py-3">
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+          Python Editor
+        </h1>
+      </div>
+      <EditorToolbar
+        onRun={run}
+        onStop={stop}
+        onClear={clearCode}
+        onSave={saveCode}
+        onLoad={loadCode}
+        isRunning={isRunning}
+      />
+      <div className="flex-1">
+        <PythonEditor value={code} onChange={setCode} />
       </div>
     </div>
   );

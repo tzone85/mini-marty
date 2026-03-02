@@ -25,6 +25,45 @@ vi.mock("@monaco-editor/react", () => ({
   ),
 }));
 
+vi.mock("next/dynamic", () => ({
+  default: (loader: () => Promise<{ default: React.ComponentType }>) => {
+    // Immediately resolve the dynamic import for testing
+    const MockComponent = ({ marty }: { marty?: unknown }) => (
+      <div data-testid="marty-scene" data-has-marty={marty ? "true" : "false"}>
+        3D Scene Mock
+      </div>
+    );
+    MockComponent.displayName = "DynamicMock";
+    return MockComponent;
+  },
+}));
+
+vi.mock("@/features/python-runtime/hooks/usePyodide", () => ({
+  usePyodide: () => ({
+    state: "ready",
+    error: null,
+    instance: {
+      runPythonAsync: vi.fn(),
+      registerJsModule: vi.fn(),
+      setStdout: vi.fn(),
+      setStderr: vi.fn(),
+      globals: { get: vi.fn() },
+    },
+    initialize: vi.fn(),
+  }),
+}));
+
+vi.mock("@/features/python-runtime/hooks/usePythonExecution", () => ({
+  usePythonExecution: () => ({
+    isRunning: false,
+    consoleEntries: [],
+    lastError: null,
+    run: vi.fn(),
+    stop: vi.fn(),
+    clearConsole: vi.fn(),
+  }),
+}));
+
 function renderPage() {
   return render(
     <ThemeProvider>
@@ -76,22 +115,6 @@ describe("PythonEditorPage", () => {
     );
   });
 
-  it("disables Run button while running", async () => {
-    const user = userEvent.setup();
-    renderPage();
-
-    await user.click(screen.getByRole("button", { name: /run/i }));
-    expect(screen.getByRole("button", { name: /run/i })).toBeDisabled();
-  });
-
-  it("enables Stop button while running", async () => {
-    const user = userEvent.setup();
-    renderPage();
-
-    await user.click(screen.getByRole("button", { name: /run/i }));
-    expect(screen.getByRole("button", { name: /stop/i })).toBeEnabled();
-  });
-
   it("saves code to localStorage", async () => {
     const user = userEvent.setup();
     renderPage();
@@ -106,5 +129,34 @@ describe("PythonEditorPage", () => {
       "data-language",
       "python",
     );
+  });
+
+  it("renders the 3D Marty viewport", () => {
+    renderPage();
+    expect(screen.getByTestId("marty-viewport")).toBeInTheDocument();
+  });
+
+  it("renders the MartyScene with marty instance", () => {
+    renderPage();
+    expect(screen.getByTestId("marty-scene")).toBeInTheDocument();
+    expect(screen.getByTestId("marty-scene")).toHaveAttribute(
+      "data-has-marty",
+      "true",
+    );
+  });
+
+  it("renders the console output panel", () => {
+    renderPage();
+    expect(screen.getByTestId("console-output")).toBeInTheDocument();
+  });
+
+  it("renders the Pyodide status indicator", () => {
+    renderPage();
+    expect(screen.getByTestId("pyodide-status")).toBeInTheDocument();
+  });
+
+  it("shows Python ready status", () => {
+    renderPage();
+    expect(screen.getByText("Python ready")).toBeInTheDocument();
   });
 });

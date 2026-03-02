@@ -54,8 +54,12 @@ export function BlocklyWorkspace() {
     if (!workspaceRef.current) return;
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      const state = JSON.parse(saved) as Record<string, unknown>;
-      Blockly.serialization.workspaces.load(state, workspaceRef.current);
+      try {
+        const state = JSON.parse(saved) as Record<string, unknown>;
+        Blockly.serialization.workspaces.load(state, workspaceRef.current);
+      } catch (error) {
+        console.error("Failed to load workspace:", error);
+      }
     }
   }, []);
 

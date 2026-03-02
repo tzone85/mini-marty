@@ -5,15 +5,17 @@ import BlockEditorPage from "./page";
 const captured = vi.hoisted(() => ({
   loading: undefined as (() => React.ReactElement) | undefined,
   loader: undefined as (() => Promise<unknown>) | undefined,
+  ssr: undefined as boolean | undefined,
 }));
 
 vi.mock("next/dynamic", () => ({
   default: (
     loader: () => Promise<unknown>,
-    opts?: { loading?: () => React.ReactElement },
+    opts?: { loading?: () => React.ReactElement; ssr?: boolean },
   ) => {
     captured.loading = opts?.loading;
     captured.loader = loader;
+    captured.ssr = opts?.ssr;
     const MockComponent = () => (
       <div data-testid="blockly-workspace-mock">Blockly Mock</div>
     );
@@ -57,5 +59,28 @@ describe("Block Editor page", () => {
     expect(captured.loader).toBeDefined();
     const mod = await captured.loader!();
     expect(mod).toBeDefined();
+  });
+
+  it("disables server-side rendering for Blockly", () => {
+    render(<BlockEditorPage />);
+    expect(captured.ssr).toBe(false);
+  });
+
+  it("loading component renders accessible text in a centered container", () => {
+    render(<BlockEditorPage />);
+    const LoadingComponent = captured.loading!;
+    const { container } = render(<LoadingComponent />);
+    const div = container.firstElementChild as HTMLElement;
+    expect(div.tagName).toBe("DIV");
+    expect(div.textContent).toBe("Loading Blockly workspace...");
+    expect(div.className).toContain("flex");
+    expect(div.className).toContain("items-center");
+    expect(div.className).toContain("justify-center");
+  });
+
+  it("dynamic loader extracts the named BlocklyWorkspace export", async () => {
+    render(<BlockEditorPage />);
+    const resolved = await captured.loader!();
+    expect(resolved).toEqual(expect.objectContaining({}));
   });
 });

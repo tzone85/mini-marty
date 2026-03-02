@@ -10,3 +10,6 @@ export {
   DEFAULT_EYE_STATE,
 } from "./types";
 export type { JointAngles, EyeState, SceneConfig, JointName } from "./types";
+export { AnimatedMarty } from "./components/AnimatedMarty";
+export { AnimationPlayer, getSequenceForAction } from "./animation";
+export type { AnimationAction, AnimationSequence } from "./animation";

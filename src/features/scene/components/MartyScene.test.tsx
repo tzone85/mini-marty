@@ -10,9 +10,7 @@ vi.mock("@react-three/fiber", () => ({
   Canvas: (props: Record<string, unknown>) => {
     mockCanvas(props);
     return (
-      <div data-testid="r3f-canvas">
-        {props.children as React.ReactNode}
-      </div>
+      <div data-testid="r3f-canvas">{props.children as React.ReactNode}</div>
     );
   },
 }));

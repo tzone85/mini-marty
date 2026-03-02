@@ -122,9 +122,7 @@ describe("MartyModel", () => {
     const leftShoulder = container.querySelector(
       '[data-testid="left-shoulder"]',
     );
-    const leftElbow = leftShoulder?.querySelector(
-      '[data-testid="left-elbow"]',
-    );
+    const leftElbow = leftShoulder?.querySelector('[data-testid="left-elbow"]');
     expect(leftElbow).toBeTruthy();
   });
 

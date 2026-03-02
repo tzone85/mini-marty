@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { JOINT_NAMES } from "./types";
-import type { JointName, JointRefs, MartyModelProps, MartySceneProps } from "./types";
+import type {
+  JointName,
+  JointRefs,
+  MartyModelProps,
+  MartySceneProps,
+} from "./types";
 
 describe("Scene types", () => {
   it("JOINT_NAMES contains all 15 joints", () => {

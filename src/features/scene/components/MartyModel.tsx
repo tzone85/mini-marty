@@ -127,20 +127,12 @@ function Leg({
   const xPos = side === "left" ? -0.15 : 0.15;
 
   return (
-    <group
-      ref={hipRef}
-      position={[xPos, 0.0, 0]}
-      data-testid={`${side}-hip`}
-    >
+    <group ref={hipRef} position={[xPos, 0.0, 0]} data-testid={`${side}-hip`}>
       <mesh position={[0, -0.15, 0]}>
         <boxGeometry args={[0.14, 0.3, 0.14]} />
         <meshStandardMaterial color={COLORS.accent} />
       </mesh>
-      <group
-        ref={kneeRef}
-        position={[0, -0.3, 0]}
-        data-testid={`${side}-knee`}
-      >
+      <group ref={kneeRef} position={[0, -0.3, 0]} data-testid={`${side}-knee`}>
         <mesh position={[0, -0.12, 0]}>
           <boxGeometry args={[0.12, 0.25, 0.12]} />
           <meshStandardMaterial color={COLORS.body} />

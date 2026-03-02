@@ -9,7 +9,7 @@ export class MartyEventEmitter {
 
   on<T extends MartyEventType>(type: T, listener: Listener<T>): void {
     const list = (this.listeners[type] ?? []) as Array<Listener<T>>;
-    this.listeners[type] = [...list, listener] as typeof this.listeners[T];
+    this.listeners[type] = [...list, listener] as (typeof this.listeners)[T];
   }
 
   off<T extends MartyEventType>(type: T, listener: Listener<T>): void {
@@ -17,7 +17,7 @@ export class MartyEventEmitter {
     if (!list) return;
     this.listeners[type] = list.filter(
       (l) => l !== listener,
-    ) as typeof this.listeners[T];
+    ) as (typeof this.listeners)[T];
   }
 
   emit<T extends MartyEventType>(type: T, event: MartyEventMap[T]): void {

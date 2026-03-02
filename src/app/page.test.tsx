@@ -16,4 +16,11 @@ describe("Home page", () => {
       screen.getByText(/visual programming environment/i),
     ).toBeInTheDocument();
   });
+
+  it("renders quick action links", () => {
+    render(<Home />);
+    expect(screen.getByText(/block editor/i)).toBeInTheDocument();
+    expect(screen.getByText(/python editor/i)).toBeInTheDocument();
+    expect(screen.getByText(/tutorials/i)).toBeInTheDocument();
+  });
 });

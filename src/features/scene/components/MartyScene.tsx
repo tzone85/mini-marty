@@ -2,19 +2,23 @@
 
 import { useRef, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
+import type { VirtualMarty } from "@/features/marty/virtual-marty";
 import { MartyModel } from "./MartyModel";
 import type { MartyModelHandle } from "./MartyModel";
+import { AnimatedMarty } from "./AnimatedMarty";
 import { SceneEnvironment } from "./SceneEnvironment";
 import type { MartyPose, SceneConfig } from "../types";
 import { DEFAULT_SCENE_CONFIG } from "../types";
 
 interface MartySceneProps {
   readonly config?: Partial<SceneConfig>;
+  readonly marty?: VirtualMarty | null;
   readonly onModelReady?: (handle: MartyModelHandle) => void;
 }
 
 export function MartyScene({
   config: configOverrides,
+  marty = null,
   onModelReady,
 }: MartySceneProps) {
   const modelRef = useRef<MartyModelHandle>(null);
@@ -50,7 +54,11 @@ export function MartyScene({
         style={{ background: config.backgroundColor }}
       >
         <SceneEnvironment showGrid={config.showGrid} />
-        <MartyModel ref={handleRef} />
+        {marty ? (
+          <AnimatedMarty marty={marty} />
+        ) : (
+          <MartyModel ref={handleRef} />
+        )}
       </Canvas>
     </div>
   );

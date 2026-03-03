@@ -9,6 +9,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { label: "Python Editor", path: "/python-editor" },
   { label: "Tutorials", path: "/tutorials" },
   { label: "Challenges", path: "/challenges" },
+  { label: "Help", path: "/docs" },
 ] as const;
 
 export function getActiveNavItem(pathname: string): NavItem | undefined {

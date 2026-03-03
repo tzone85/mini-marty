@@ -36,6 +36,13 @@ describe("getSidebarSections", () => {
     expect(titles).toContain("Difficulty");
   });
 
+  it("returns sections for docs", () => {
+    const sections = getSidebarSections("/docs");
+    expect(sections.length).toBeGreaterThan(0);
+    const titles = sections.map((s) => s.title);
+    expect(titles).toContain("Documentation");
+  });
+
   it("returns default sections for unknown paths", () => {
     const sections = getSidebarSections("/unknown");
     expect(sections.length).toBeGreaterThan(0);

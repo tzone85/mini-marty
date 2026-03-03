@@ -37,9 +37,15 @@ export function createMartyBridge(marty: VirtualMarty): object {
 }
 
 export const MARTYPY_MODULE_CODE = `
+import sys
+import types
 import pyodide_js
-from pyodide.ffi import to_js
 import asyncio
+
+# Create the martypy module and register it in sys.modules
+# so 'from martypy import Marty' works as expected
+_martypy_mod = types.ModuleType("martypy")
+_martypy_mod.__package__ = "martypy"
 
 class Marty:
     def __init__(self, connection_type="virtual"):
@@ -114,6 +120,9 @@ class Marty:
 
     async def play_sound(self, name):
         await self._bridge.play_sound(name)
+
+_martypy_mod.Marty = Marty
+sys.modules["martypy"] = _martypy_mod
 `;
 
 export const EXECUTION_WRAPPER_CODE = `

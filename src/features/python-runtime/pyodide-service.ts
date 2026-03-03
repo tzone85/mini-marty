@@ -1,7 +1,8 @@
 import type { PyodideLoadingState } from "./types";
 
-const PYODIDE_CDN_URL =
-  "https://cdn.jsdelivr.net/pyodide/v0.27.5/full/pyodide.js";
+const PYODIDE_VERSION = "0.27.5";
+const PYODIDE_CDN_BASE = `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full`;
+const PYODIDE_CDN_URL = `${PYODIDE_CDN_BASE}/pyodide.js`;
 
 export interface PyodideInstance {
   readonly runPythonAsync: (code: string) => Promise<unknown>;
@@ -85,7 +86,7 @@ export async function loadPyodide(): Promise<PyodideInstance> {
       }
 
       const instance = await globalWindow.loadPyodide({
-        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.27.5/full/",
+        indexURL: `${PYODIDE_CDN_BASE}/`,
       });
 
       pyodideInstance = instance;

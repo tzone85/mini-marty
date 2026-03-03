@@ -196,6 +196,19 @@ describe("martypy-module", () => {
     it("raises ValueError for non-virtual connection", () => {
       expect(MARTYPY_MODULE_CODE).toContain("raise ValueError");
     });
+
+    it("registers martypy in sys.modules for import support", () => {
+      expect(MARTYPY_MODULE_CODE).toContain('sys.modules["martypy"]');
+    });
+
+    it("creates a proper Python module via types.ModuleType", () => {
+      expect(MARTYPY_MODULE_CODE).toContain("types.ModuleType");
+      expect(MARTYPY_MODULE_CODE).toContain('"martypy"');
+    });
+
+    it("assigns Marty class to the module", () => {
+      expect(MARTYPY_MODULE_CODE).toContain("_martypy_mod.Marty = Marty");
+    });
   });
 
   describe("EXECUTION_WRAPPER_CODE", () => {

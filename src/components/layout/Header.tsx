@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS } from "@/lib/navigation";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { HelpMenu } from "@/features/docs/components/HelpMenu";
 
 export function Header() {
   const pathname = usePathname();
@@ -33,7 +34,10 @@ export function Header() {
           </ul>
         </nav>
       </div>
-      <ThemeToggle />
+      <div className="flex items-center gap-2">
+        <HelpMenu />
+        <ThemeToggle />
+      </div>
     </header>
   );
 }

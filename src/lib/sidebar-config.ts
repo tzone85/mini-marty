@@ -77,12 +77,27 @@ const CHALLENGES_SECTIONS: readonly SidebarSection[] = [
   },
 ];
 
+const DOCS_SECTIONS: readonly SidebarSection[] = [
+  {
+    title: "Documentation",
+    items: [
+      { label: "Quick Start Guide" },
+      { label: "Block Reference" },
+      { label: "Python API" },
+      { label: "Parent & Teacher" },
+      { label: "Keyboard Shortcuts" },
+      { label: "FAQ & Troubleshooting" },
+    ],
+  },
+];
+
 const SECTION_MAP: Readonly<Record<string, readonly SidebarSection[]>> = {
   "/": HOME_SECTIONS,
   "/block-editor": BLOCK_EDITOR_SECTIONS,
   "/python-editor": PYTHON_EDITOR_SECTIONS,
   "/tutorials": TUTORIALS_SECTIONS,
   "/challenges": CHALLENGES_SECTIONS,
+  "/docs": DOCS_SECTIONS,
 };
 
 export function getSidebarSections(

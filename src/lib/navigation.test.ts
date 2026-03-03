@@ -18,8 +18,13 @@ describe("NAV_ITEMS", () => {
     }
   });
 
-  it("has exactly 5 navigation items", () => {
-    expect(NAV_ITEMS).toHaveLength(5);
+  it("has exactly 6 navigation items", () => {
+    expect(NAV_ITEMS).toHaveLength(6);
+  });
+
+  it("includes help/docs navigation", () => {
+    const paths = NAV_ITEMS.map((item) => item.path);
+    expect(paths).toContain("/docs");
   });
 });
 

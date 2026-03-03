@@ -31,3 +31,8 @@ next-env.d.ts
 # IDE
 .vscode/
 .idea/
+
+# hive agent working copies
+.hive/
+repos/
+firebase-debug.log

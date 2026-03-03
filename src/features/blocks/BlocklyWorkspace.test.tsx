@@ -13,6 +13,8 @@ const mockWorkspace = {
   dispose: mockDispose,
   undo: mockUndo,
   getAllBlocks: () => [],
+  getTopBlocks: () => [],
+  highlightBlock: vi.fn(),
 };
 
 const mockInject = vi.fn().mockReturnValue(mockWorkspace);

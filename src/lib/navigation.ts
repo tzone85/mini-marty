@@ -1,0 +1,17 @@
+export interface NavItem {
+  readonly label: string;
+  readonly path: string;
+}
+
+export const NAV_ITEMS: readonly NavItem[] = [
+  { label: "Home", path: "/" },
+  { label: "Block Editor", path: "/block-editor" },
+  { label: "Python Editor", path: "/python-editor" },
+  { label: "Tutorials", path: "/tutorials" },
+  { label: "Challenges", path: "/challenges" },
+  { label: "Help", path: "/docs" },
+] as const;
+
+export function getActiveNavItem(pathname: string): NavItem | undefined {
+  return NAV_ITEMS.find((item) => item.path === pathname);
+}

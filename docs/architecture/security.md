@@ -4,16 +4,18 @@ Mini Marty has no backend, no auth, and no PII. Risk surface is the browser sand
 
 ## Content Security Policy
 
-`proxy.ts` (Next.js middleware exported as `proxy`) sets a static CSP on every response. No per-request nonce is used: there are no inline scripts to authorise, and `'wasm-unsafe-eval'` is required for Pyodide's WebAssembly bootstrap.
+`proxy.ts` (Next.js middleware exported as `proxy`) issues a fresh nonce per request and sets:
 
 | Directive | Value |
 |---|---|
 | `default-src` | `'self'` |
-| `script-src` | `'self' 'wasm-unsafe-eval' cdn.jsdelivr.net va.vercel-scripts.com` |
+| `script-src` | `'self' 'nonce-<id>' 'wasm-unsafe-eval' cdn.jsdelivr.net va.vercel-scripts.com` |
 | `style-src` | `'self' 'unsafe-inline'` (Tailwind utility classes) |
 | `connect-src` | `'self' cdn.jsdelivr.net *.ingest.sentry.io vitals.vercel-insights.com` |
 | `worker-src` | `'self' blob:` (Pyodide workers) |
 | `frame-ancestors` | `'none'` |
+
+The nonce is propagated to App Router by mirroring it onto the request as the `x-nonce` header. Next.js automatically attaches that nonce to every inline `<script>` it injects (hydration shim, RSC payload, route prefetch); without it, those scripts are blocked and the app fails to hydrate. Application code never reads `x-nonce` directly.
 
 Companion headers: `Referrer-Policy: strict-origin-when-cross-origin`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Permissions-Policy` disables camera / mic / geolocation.
 
@@ -28,6 +30,6 @@ Only public flags are read from `process.env`. Anything beginning with `NEXT_PUB
 ## Audit checklist before release
 
 - [ ] `npm audit --production` clean
-- [ ] CSP headers verified live (`curl -I` the deployed URL)
+- [ ] CSP nonce verified live (`curl -I` the deployed URL)
 - [ ] No `console.log` in production bundle (`npm run build` then grep)
 - [ ] No third-party domains added to `connect-src` without review

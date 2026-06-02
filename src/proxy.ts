@@ -1,9 +1,19 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-export function proxy(_req: NextRequest) {
+function generateNonce(): string {
+  return Buffer.from(crypto.randomUUID()).toString("base64");
+}
+
+export function proxy(req: NextRequest) {
+  // Next.js App Router automatically picks up an `x-nonce` request
+  // header and attaches that nonce to every inline <script> it
+  // injects (hydration shim, route prefetch, RSC payload). Without
+  // a nonce in script-src those inline scripts are blocked by CSP
+  // and the app fails to hydrate.
+  const nonce = generateNonce();
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://va.vercel-scripts.com",
+    `script-src 'self' 'nonce-${nonce}' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://va.vercel-scripts.com`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self' data:",
@@ -14,7 +24,9 @@ export function proxy(_req: NextRequest) {
     "form-action 'self'",
   ].join("; ");
 
-  const res = NextResponse.next();
+  const headers = new Headers(req.headers);
+  headers.set("x-nonce", nonce);
+  const res = NextResponse.next({ request: { headers } });
   res.headers.set("Content-Security-Policy", csp);
   res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   res.headers.set("X-Content-Type-Options", "nosniff");

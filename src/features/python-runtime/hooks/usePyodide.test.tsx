@@ -1,5 +1,9 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { act, renderHook, waitFor } from "@testing-library/react";
+import type { ReactNode } from "react";
+import { ObservabilityProvider } from "@/lib/observability/provider";
+import { ConsoleLogger } from "@/lib/observability/console-logger";
+import { MemoryErrorReporter } from "@/lib/observability/memory-reporter";
 
 type StateListener = (state: string, err?: string) => void;
 
@@ -35,23 +39,33 @@ vi.mock("../pyodide-service", () => ({
 
 import { usePyodide } from "./usePyodide";
 
+let lastReporter: MemoryErrorReporter;
+function wrapper({ children }: { children: ReactNode }) {
+  return (
+    <ObservabilityProvider logger={new ConsoleLogger()} reporter={lastReporter}>
+      {children}
+    </ObservabilityProvider>
+  );
+}
+
 describe("usePyodide", () => {
   beforeEach(() => {
     listeners.length = 0;
     currentState = "idle";
     currentInstance = null;
+    lastReporter = new MemoryErrorReporter();
     vi.clearAllMocks();
   });
 
   it("starts in the initial state from the service", () => {
-    const { result } = renderHook(() => usePyodide());
+    const { result } = renderHook(() => usePyodide(), { wrapper });
     expect(result.current.state).toBe("idle");
     expect(result.current.instance).toBeNull();
     expect(result.current.error).toBeNull();
   });
 
   it("transitions to ready when initialize() resolves", async () => {
-    const { result } = renderHook(() => usePyodide());
+    const { result } = renderHook(() => usePyodide(), { wrapper });
     await act(async () => {
       await result.current.initialize();
     });
@@ -59,18 +73,22 @@ describe("usePyodide", () => {
     expect(result.current.instance).toBe(fakeInstance);
   });
 
-  it("surfaces load errors via the error field", async () => {
+  it("surfaces load errors via the error field and reports them", async () => {
     const svc = await import("../pyodide-service");
     vi.mocked(svc.loadPyodide).mockRejectedValueOnce(new Error("boom"));
-    const { result } = renderHook(() => usePyodide());
+    const { result } = renderHook(() => usePyodide(), { wrapper });
     await act(async () => {
       await result.current.initialize();
     });
     expect(result.current.error).toBe("boom");
+    expect(lastReporter.entries.length).toBe(1);
+    expect(lastReporter.entries[0].context).toMatchObject({
+      source: "system",
+    });
   });
 
   it("unsubscribes from state changes on unmount", () => {
-    const { unmount } = renderHook(() => usePyodide());
+    const { unmount } = renderHook(() => usePyodide(), { wrapper });
     expect(listeners.length).toBe(1);
     unmount();
     expect(listeners.length).toBe(0);

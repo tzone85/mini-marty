@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { ThemeProvider } from "@/lib/theme-context";
 import { ObservabilityProvider } from "@/lib/observability/provider";
 import { ConsoleLogger } from "@/lib/observability/console-logger";
@@ -8,6 +8,7 @@ import {
   SentryErrorReporter,
   type SentryClient,
 } from "@/lib/observability/sentry-reporter";
+import { startWebVitals } from "@/lib/observability/web-vitals";
 import { AnalyticsProvider } from "@/lib/analytics/provider";
 import { NoopAnalytics } from "@/lib/analytics/noop-analytics";
 import { VercelAnalytics } from "@/lib/analytics/vercel-analytics";
@@ -48,6 +49,12 @@ const analytics = flags.analyticsEnabled
   : new NoopAnalytics();
 
 export function Providers({ children }: { children: ReactNode }) {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      startWebVitals(analytics);
+    }
+  }, []);
+
   return (
     <ObservabilityProvider logger={logger} reporter={reporter}>
       <AnalyticsProvider analytics={analytics}>

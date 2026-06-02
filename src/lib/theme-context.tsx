@@ -6,8 +6,10 @@ import {
   useEffect,
   useCallback,
 } from "react";
+import { createSafeStorage } from "@/lib/storage/safe-storage";
+import { migrateInPlaceIfRaw } from "@/lib/storage/migrate";
+import { ThemeSchema, type Theme } from "@/lib/schemas/theme";
 
-type Theme = "light" | "dark";
 interface ThemeContextValue {
   readonly theme: Theme;
   readonly toggleTheme: () => void;
@@ -15,10 +17,19 @@ interface ThemeContextValue {
 const STORAGE_KEY = "mini-marty-theme";
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
+const themeStorage = createSafeStorage(STORAGE_KEY, ThemeSchema);
+
+function isTheme(value: unknown): value is Theme {
+  return value === "dark" || value === "light";
+}
+
 function getInitialTheme(): Theme {
   if (typeof window === "undefined") return "light";
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored === "dark" || stored === "light") return stored;
+  // One-time migration: legacy versions stored "dark" / "light" as a
+  // bare string. Re-encode to JSON so the schema parses cleanly.
+  migrateInPlaceIfRaw(window.localStorage, STORAGE_KEY, isTheme, (raw) => raw);
+  const stored = themeStorage.get();
+  if (stored !== null) return stored;
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   return prefersDark ? "dark" : "light";
 }
@@ -39,8 +50,8 @@ export function ThemeProvider({
   }, [theme]);
   const toggleTheme = useCallback(() => {
     setTheme((prev) => {
-      const next = prev === "light" ? "dark" : "light";
-      localStorage.setItem(STORAGE_KEY, next);
+      const next: Theme = prev === "light" ? "dark" : "light";
+      themeStorage.set(next);
       return next;
     });
   }, []);

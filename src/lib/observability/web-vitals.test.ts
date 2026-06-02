@@ -20,7 +20,8 @@ describe("startWebVitals", () => {
     };
     startWebVitals(analytics);
     expect(calls).toHaveLength(5);
-    expect(calls[0].event).toBe("code_run");
+    expect(calls[0].event).toBe("web_vitals");
+    expect(calls.every((c) => c.event === "web_vitals")).toBe(true);
     expect(calls[0].props?.metric).toBe("CLS");
     expect(calls[2].props?.metric).toBe("INP");
   });

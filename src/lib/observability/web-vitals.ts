@@ -10,7 +10,7 @@ interface WebVitalMetric {
 
 export function startWebVitals(analytics: Analytics): void {
   const handler = (m: WebVitalMetric) => {
-    analytics.track("code_run", {
+    analytics.track("web_vitals", {
       metric: m.name,
       value: m.value,
       id: m.id,

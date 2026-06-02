@@ -3,7 +3,8 @@ export type AnalyticsEvent =
   | "tutorial_complete"
   | "challenge_complete"
   | "block_program_saved"
-  | "theme_toggle";
+  | "theme_toggle"
+  | "web_vitals";
 
 export type AnalyticsProps = Readonly<
   Record<string, string | number | boolean>

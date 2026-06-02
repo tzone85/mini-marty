@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" role="img" aria-labelledby="title desc">
+  <title id="title">Deployment flow</title>
+  <desc id="desc">Two parallel lanes. Top lane: git push to a feature branch triggers GitHub, then Vercel Build, then a Preview Deploy URL. Bottom lane: merge to main triggers GitHub, then Vercel Build, then a Production Deploy.</desc>
+  <style>
+    .lane { fill: #f1f5f9; stroke: #94a3b8; stroke-width: 1.5; }
+    .lane-label { fill: #0f172a; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 14px; font-weight: 700; }
+    .box { fill: #ffffff; stroke: #475569; stroke-width: 1.5; }
+    .label { fill: #0f172a; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 13px; text-anchor: middle; dominant-baseline: middle; }
+    .edge { stroke: #2563eb; stroke-width: 1.5; fill: none; }
+    @media (prefers-color-scheme: dark) {
+      .lane { fill: #1e293b; stroke: #475569; }
+      .lane-label { fill: #e2e8f0; }
+      .box { fill: #0f172a; stroke: #94a3b8; }
+      .label { fill: #e2e8f0; }
+      .edge { stroke: #60a5fa; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <!-- Preview lane -->
+  <rect class="lane" x="20" y="80" width="960" height="180" rx="10"/>
+  <text class="lane-label" x="40" y="110">Preview lane (feature branch)</text>
+
+  <rect class="box" x="60" y="160" width="160" height="60" rx="8"/>
+  <text class="label" x="140" y="190">git push</text>
+
+  <rect class="box" x="280" y="160" width="160" height="60" rx="8"/>
+  <text class="label" x="360" y="190">GitHub</text>
+
+  <rect class="box" x="500" y="160" width="160" height="60" rx="8"/>
+  <text class="label" x="580" y="190">Vercel Build</text>
+
+  <rect class="box" x="720" y="160" width="220" height="60" rx="8"/>
+  <text class="label" x="830" y="190">Preview Deploy URL</text>
+
+  <line class="edge" x1="220" y1="190" x2="278" y2="190" marker-end="url(#arrow)"/>
+  <line class="edge" x1="440" y1="190" x2="498" y2="190" marker-end="url(#arrow)"/>
+  <line class="edge" x1="660" y1="190" x2="718" y2="190" marker-end="url(#arrow)"/>
+
+  <!-- Production lane -->
+  <rect class="lane" x="20" y="320" width="960" height="200" rx="10"/>
+  <text class="lane-label" x="40" y="350">Production lane (merge to main)</text>
+
+  <rect class="box" x="60" y="410" width="160" height="60" rx="8"/>
+  <text class="label" x="140" y="440">merge to main</text>
+
+  <rect class="box" x="280" y="410" width="160" height="60" rx="8"/>
+  <text class="label" x="360" y="440">GitHub</text>
+
+  <rect class="box" x="500" y="410" width="160" height="60" rx="8"/>
+  <text class="label" x="580" y="440">Vercel Build</text>
+
+  <rect class="box" x="720" y="410" width="220" height="60" rx="8"/>
+  <text class="label" x="830" y="440">Production Deploy</text>
+
+  <line class="edge" x1="220" y1="440" x2="278" y2="440" marker-end="url(#arrow)"/>
+  <line class="edge" x1="440" y1="440" x2="498" y2="440" marker-end="url(#arrow)"/>
+  <line class="edge" x1="660" y1="440" x2="718" y2="440" marker-end="url(#arrow)"/>
+</svg>

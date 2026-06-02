@@ -67,10 +67,7 @@ describe("AnimationPlayer", () => {
 describe("interpolateSequence", () => {
   it("returns DEFAULT_POSE for empty", () => {
     expect(
-      interpolateSequence(
-        { durationMs: 0, loop: false, keyframes: [] },
-        0,
-      ),
+      interpolateSequence({ durationMs: 0, loop: false, keyframes: [] }, 0),
     ).toEqual(DEFAULT_POSE);
   });
   it("returns single-keyframe pose unchanged", () => {

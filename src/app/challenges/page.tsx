@@ -17,8 +17,9 @@ const DIFFICULTY_COLORS = {
 const DIFFICULTIES = ["beginner", "intermediate", "advanced"] as const;
 
 export default function ChallengesPage() {
-  const [selectedChallenge, setSelectedChallenge] =
-    useState<Challenge | null>(null);
+  const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(
+    null,
+  );
   const [revealedHints, setRevealedHints] = useState<number>(0);
   const [filter, setFilter] = useState<
     "all" | "beginner" | "intermediate" | "advanced"

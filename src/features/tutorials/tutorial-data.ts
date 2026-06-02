@@ -111,7 +111,7 @@ await my_marty.kick("right")
 await my_marty.slide("left")
 await my_marty.slide("right")
 await my_marty.celebrate()`,
-        hint: "Try changing \"left\" to \"right\" to see the difference!",
+        hint: 'Try changing "left" to "right" to see the difference!',
       },
     ],
   },
@@ -260,8 +260,7 @@ await happy_dance()`,
     steps: [
       {
         title: "Variables and Lists",
-        description:
-          "Store movement sequences in a list and play them back.",
+        description: "Store movement sequences in a list and play them back.",
         code: `from martypy import Marty
 
 my_marty = Marty("virtual")

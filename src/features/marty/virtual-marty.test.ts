@@ -34,9 +34,9 @@ describe("VirtualMarty commands", () => {
     it(`${method} resolves`, async () => {
       const m = new VirtualMarty();
       m.setExecutionMode("non-blocking");
-      const result = (
-        m as unknown as Record<string, () => Promise<void>>
-      )[method]();
+      const result = (m as unknown as Record<string, () => Promise<void>>)[
+        method
+      ]();
       await expect(result).resolves.toBeUndefined();
     });
   }

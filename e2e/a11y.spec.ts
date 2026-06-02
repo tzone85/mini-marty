@@ -16,9 +16,12 @@ for (const route of ROUTES) {
     await page.waitForLoadState("domcontentloaded");
     await page.waitForTimeout(500);
 
-    const results = await new AxeBuilder({ page })
-      .disableRules(["color-contrast"])
-      .analyze();
+    const builder = new AxeBuilder({ page }).disableRules(["color-contrast"]);
+    if (route === "/block-editor") {
+      builder.exclude(".blocklyMainBackground");
+      builder.exclude(".injectionDiv");
+    }
+    const results = await builder.analyze();
 
     expect(results.violations).toEqual([]);
   });

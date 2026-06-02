@@ -1,8 +1,8 @@
 # Mini Marty
 
-[![CI](https://github.com/Thando-Mini/marty/actions/workflows/ci.yml/badge.svg)](https://github.com/Thando-Mini/marty/actions/workflows/ci.yml)
+[![CI](https://github.com/tzone85/mini-marty/actions/workflows/ci.yml/badge.svg)](https://github.com/tzone85/mini-marty/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FThando-Mini%2Fmarty)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftzone85%2Fmini-marty)
 
 A virtual programming environment for learning to code with Marty the Robot. No physical robot needed.
 

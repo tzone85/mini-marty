@@ -1,12 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 function generateNonce(): string {
-  // Buffer is available in Next 16's default Node runtime; if the middleware
-  // ever moves to the Edge runtime, swap to `btoa(crypto.randomUUID())`.
   return Buffer.from(crypto.randomUUID()).toString("base64");
 }
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const nonce = generateNonce();
   const csp = [
     "default-src 'self'",

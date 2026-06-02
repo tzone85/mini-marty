@@ -36,7 +36,7 @@ describe("formatPythonError", () => {
 });
 
 describe("executePythonCode", () => {
-  it("strips martypy imports and runs wrapped code", async () => {
+  it("strips martypy imports from the user-supplied code", async () => {
     resetEntryCounter();
     const calls: string[] = [];
     const fake = fakePyodide({
@@ -54,7 +54,9 @@ describe("executePythonCode", () => {
       },
     );
     expect(r.success).toBe(true);
-    expect(calls.join("\n")).not.toContain("from martypy import Marty");
+    // The wrapper adds its own `from martypy import Marty` at the top;
+    // the user-code section (indented 4 spaces) should not contain the import.
+    expect(calls.join("\n")).not.toContain("    from martypy import Marty");
   });
   it("surfaces errors via onStderr", async () => {
     const fake = fakePyodide({
@@ -70,7 +72,7 @@ describe("executePythonCode", () => {
     expect(r.success).toBe(false);
     expect(onStderr).toHaveBeenCalled();
   });
-  it("strips plain `import martypy` lines as well", async () => {
+  it("strips plain `import martypy` lines from user code", async () => {
     const calls: string[] = [];
     const fake = fakePyodide({
       runPythonAsync: async (s: string) => {
@@ -82,7 +84,8 @@ describe("executePythonCode", () => {
       onStdout: vi.fn(),
       onStderr: vi.fn(),
     });
-    expect(calls.join("\n")).not.toContain("import martypy");
+    // The indented user-code section should not contain `import martypy`.
+    expect(calls.join("\n")).not.toContain("    import martypy");
   });
 });
 

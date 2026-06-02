@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Mini Marty">
+  <title>Mini Marty</title>
+  <rect width="512" height="512" rx="96" fill="#0b1220"/>
+  <g fill="#ffffff">
+    <!-- Head -->
+    <rect x="160" y="112" width="192" height="160" rx="24" fill="#1e293b" stroke="#38bdf8" stroke-width="6"/>
+    <!-- Eyes -->
+    <circle cx="216" cy="184" r="20" fill="#38bdf8"/>
+    <circle cx="296" cy="184" r="20" fill="#38bdf8"/>
+    <!-- Mouth / smile -->
+    <path d="M212 224 Q256 252 300 224" stroke="#38bdf8" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <!-- Body -->
+    <rect x="176" y="288" width="160" height="112" rx="20" fill="#1e293b" stroke="#38bdf8" stroke-width="6"/>
+    <!-- Arms -->
+    <rect x="120" y="304" width="48" height="80" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="6"/>
+    <rect x="344" y="304" width="48" height="80" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="6"/>
+    <!-- Legs -->
+    <rect x="196" y="408" width="48" height="64" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="6"/>
+    <rect x="268" y="408" width="48" height="64" rx="12" fill="#1e293b" stroke="#38bdf8" stroke-width="6"/>
+  </g>
+</svg>

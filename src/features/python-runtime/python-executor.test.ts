@@ -3,7 +3,6 @@ import {
   formatPythonError,
   executePythonCode,
   registerMartyModule,
-  resetEntryCounter,
 } from "./python-executor";
 import type { PyodideInstance } from "./pyodide-service";
 import { VirtualMarty } from "@/features/marty/virtual-marty";
@@ -22,8 +21,9 @@ function fakePyodide(
 }
 
 describe("formatPythonError", () => {
-  it("subtracts 5 from line numbers", () => {
-    expect(formatPythonError("Error at line 6 of file")).toContain("line 1");
+  it("offsets reported line numbers by the wrapper prelude", () => {
+    // The wrapper adds 6 prelude lines, so wrapped line 7 maps to user line 1.
+    expect(formatPythonError("Error at line 7 of file")).toContain("line 1");
   });
   it("never goes below 1", () => {
     expect(formatPythonError("Error at line 2")).toContain("line 1");
@@ -37,7 +37,6 @@ describe("formatPythonError", () => {
 
 describe("executePythonCode", () => {
   it("strips martypy imports from the user-supplied code", async () => {
-    resetEntryCounter();
     const calls: string[] = [];
     const fake = fakePyodide({
       runPythonAsync: async (s: string) => {

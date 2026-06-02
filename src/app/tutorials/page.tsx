@@ -23,6 +23,7 @@ export default function TutorialsPage() {
       <div className="flex h-full flex-col">
         <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
           <button
+            type="button"
             onClick={() => {
               setSelectedTutorial(null);
               setCurrentStep(0);
@@ -70,6 +71,7 @@ export default function TutorialsPage() {
 
         <div className="flex items-center justify-between border-t border-gray-200 px-6 py-3 dark:border-gray-700">
           <button
+            type="button"
             onClick={() => setCurrentStep((s) => Math.max(0, s - 1))}
             disabled={currentStep === 0}
             className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 disabled:opacity-50 dark:bg-gray-700 dark:text-gray-200"
@@ -80,6 +82,7 @@ export default function TutorialsPage() {
             {selectedTutorial.steps.map((_, i) => (
               <button
                 key={i}
+                type="button"
                 onClick={() => setCurrentStep(i)}
                 className={`h-2 w-2 rounded-full transition-colors ${
                   i === currentStep
@@ -91,6 +94,7 @@ export default function TutorialsPage() {
             ))}
           </div>
           <button
+            type="button"
             onClick={() =>
               setCurrentStep((s) =>
                 Math.min(selectedTutorial.steps.length - 1, s + 1),
@@ -120,6 +124,7 @@ export default function TutorialsPage() {
         {TUTORIALS.map((tutorial) => (
           <button
             key={tutorial.id}
+            type="button"
             onClick={() => setSelectedTutorial(tutorial)}
             className="rounded-lg border border-gray-200 p-4 text-left transition-all hover:border-blue-400 hover:shadow-md dark:border-gray-700 dark:hover:border-blue-500"
           >

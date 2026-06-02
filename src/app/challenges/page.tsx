@@ -33,6 +33,7 @@ export default function ChallengesPage() {
       <div className="flex h-full flex-col">
         <div className="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
           <button
+            type="button"
             onClick={() => {
               setSelectedChallenge(null);
               setRevealedHints(0);
@@ -97,6 +98,7 @@ export default function ChallengesPage() {
             </div>
             {revealedHints < selectedChallenge.hints.length && (
               <button
+                type="button"
                 onClick={() => setRevealedHints((r) => r + 1)}
                 className="mt-3 rounded-md bg-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
               >
@@ -121,6 +123,7 @@ export default function ChallengesPage() {
 
       <div className="mt-4 flex gap-2">
         <button
+          type="button"
           onClick={() => setFilter("all")}
           className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
             filter === "all"
@@ -133,6 +136,7 @@ export default function ChallengesPage() {
         {DIFFICULTIES.map((d) => (
           <button
             key={d}
+            type="button"
             onClick={() => setFilter(d)}
             className={`rounded-full px-3 py-1 text-sm font-medium capitalize transition-colors ${
               filter === d
@@ -149,6 +153,7 @@ export default function ChallengesPage() {
         {challenges.map((challenge) => (
           <button
             key={challenge.id}
+            type="button"
             onClick={() => setSelectedChallenge(challenge)}
             className="rounded-lg border border-gray-200 p-4 text-left transition-all hover:border-blue-400 hover:shadow-md dark:border-gray-700 dark:hover:border-blue-500"
           >

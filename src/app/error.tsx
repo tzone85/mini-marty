@@ -1,5 +1,4 @@
 "use client";
-import { useEffect } from "react";
 
 export default function ErrorPage({
   error,
@@ -8,13 +7,15 @@ export default function ErrorPage({
   error: Error;
   reset: () => void;
 }) {
-  useEffect(() => {
-    console.error("[route-error]", error);
-  }, [error]);
   return (
     <div role="alert" className="p-8 text-center">
       <h1 className="text-2xl font-bold">Something went wrong on this page</h1>
-      <p className="mt-2 text-gray-600 dark:text-gray-300">{error.message}</p>
+      <p
+        className="mt-2 text-gray-600 dark:text-gray-300"
+        data-error-message={error.message}
+      >
+        We hit an unexpected problem. Try again, or head back to the home page.
+      </p>
       <button
         type="button"
         onClick={reset}

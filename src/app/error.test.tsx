@@ -1,20 +1,20 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import ErrorPage from "./error";
 
 describe("ErrorPage", () => {
-  beforeEach(() => {
-    vi.spyOn(console, "error").mockImplementation(() => {});
-  });
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("renders the error message and a retry button", () => {
+  it("renders a fixed friendly message and a retry button", () => {
     const reset = vi.fn();
     render(<ErrorPage error={new Error("kaboom")} reset={reset} />);
-    expect(screen.getByRole("alert")).toBeInTheDocument();
-    expect(screen.getByText("kaboom")).toBeInTheDocument();
+    const alert = screen.getByRole("alert");
+    expect(alert).toBeInTheDocument();
+    // Raw error.message must NOT leak into visible text.
+    expect(alert.textContent).not.toContain("kaboom");
+    // It is preserved only as a debug attribute for support diagnostics.
+    expect(alert.querySelector("[data-error-message]")).toHaveAttribute(
+      "data-error-message",
+      "kaboom",
+    );
     fireEvent.click(screen.getByRole("button", { name: /try again/i }));
     expect(reset).toHaveBeenCalledTimes(1);
   });

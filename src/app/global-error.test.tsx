@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import GlobalError from "./global-error";
 
 describe("GlobalError", () => {
-  it("renders an alert with the error message and a reload action", () => {
+  it("renders an alert with a fixed message and a reload action", () => {
     const reset = vi.fn();
     // Suppress the React warning about <html> in <div> during the test render.
     const originalError = console.error;
@@ -17,8 +17,16 @@ describe("GlobalError", () => {
 
     try {
       render(<GlobalError error={new Error("global boom")} reset={reset} />);
-      expect(screen.getByRole("alert")).toHaveTextContent("global boom");
-      fireEvent.click(screen.getByRole("button", { name: /reload/i }));
+      const alert = screen.getByRole("alert");
+      // Raw message is preserved only as a diagnostic attribute.
+      expect(alert.textContent).not.toContain("global boom");
+      expect(alert.querySelector("[data-error-message]")).toHaveAttribute(
+        "data-error-message",
+        "global boom",
+      );
+      const button = screen.getByRole("button", { name: /reload/i });
+      expect(button).toHaveAttribute("type", "button");
+      fireEvent.click(button);
       expect(reset).toHaveBeenCalledTimes(1);
     } finally {
       console.error = originalError;

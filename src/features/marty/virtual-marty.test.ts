@@ -1,20 +1,30 @@
 import { describe, expect, it, vi } from "vitest";
 import { VirtualMarty } from "./virtual-marty";
+import { FakeClock } from "./clock";
+
+async function flushMicrotasks(times = 4): Promise<void> {
+  for (let i = 0; i < times; i++) {
+    await Promise.resolve();
+  }
+}
 
 describe("VirtualMarty commands", () => {
   it("walk emits start + complete", async () => {
-    const m = new VirtualMarty();
+    const clock = new FakeClock();
+    const m = new VirtualMarty(clock);
     m.setExecutionMode("non-blocking");
     const start = vi.fn();
     const complete = vi.fn();
     m.on("commandStart", start);
     m.on("commandComplete", complete);
     await m.walk(1, 50);
+    await flushMicrotasks();
     expect(start).toHaveBeenCalled();
-    // non-blocking returns immediately; wait a frame for queue to emit complete
-    await new Promise((r) => setTimeout(r, 1100));
+    // walk has a 1000ms duration; advance the fake clock to drain it.
+    clock.advance(1000);
+    await flushMicrotasks();
     expect(complete).toHaveBeenCalled();
-  }, 15000);
+  });
 
   for (const method of [
     "dance",

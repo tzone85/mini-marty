@@ -10,23 +10,23 @@ import { type Clock, RealClock } from "./clock";
 type CommandStartListener = (event: CommandStartEvent) => void;
 type CommandCompleteListener = (event: CommandCompleteEvent) => void;
 
-let nextId = 0;
-function generateId(): string {
-  nextId += 1;
-  return `cmd-${nextId}`;
-}
-
 export class CommandQueue {
   private queue: QueuedCommand[] = [];
   private tail: Promise<void> = Promise.resolve();
   private startListeners: CommandStartListener[] = [];
   private completeListeners: CommandCompleteListener[] = [];
+  private nextId = 0;
 
   constructor(private readonly clock: Clock = new RealClock()) {}
 
+  private generateId(): string {
+    this.nextId += 1;
+    return `cmd-${this.nextId}`;
+  }
+
   enqueue(command: MartyCommand, mode: ExecutionMode): Promise<void> {
     const queued: QueuedCommand = {
-      id: generateId(),
+      id: this.generateId(),
       command,
       status: "pending",
       blocking: mode === "blocking",

@@ -11,6 +11,7 @@ import type {
 } from "./types";
 import { MartyEventEmitter } from "./event-emitter";
 import { CommandQueue } from "./command-queue";
+import { type Clock, RealClock } from "./clock";
 
 const DEFAULT_SENSOR_DATA: SensorData = {
   footOnGround: { left: true, right: true },
@@ -20,13 +21,14 @@ const DEFAULT_SENSOR_DATA: SensorData = {
 
 export class VirtualMarty {
   private readonly emitter = new MartyEventEmitter();
-  private readonly queue = new CommandQueue();
+  private readonly queue: CommandQueue;
   private executionMode: ExecutionMode = "blocking";
   private moving = false;
   private paused = false;
   private sensorData: SensorData = { ...DEFAULT_SENSOR_DATA };
 
-  constructor() {
+  constructor(clock: Clock = new RealClock()) {
+    this.queue = new CommandQueue(clock);
     this.queue.onCommandStart((event) => {
       this.moving = true;
       this.emitter.emit("commandStart", {

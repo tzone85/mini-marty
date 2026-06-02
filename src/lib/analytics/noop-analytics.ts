@@ -1,13 +1,14 @@
 import type { Analytics, AnalyticsEvent, AnalyticsProps } from "./types";
 
+/**
+ * No-op analytics implementation. Used in production when the
+ * analytics flag is disabled — discards every event with zero
+ * side effects.
+ */
 export class NoopAnalytics implements Analytics {
-  private _events: { name: AnalyticsEvent; props?: AnalyticsProps }[] = [];
-
-  get events() {
-    return this._events;
-  }
-
-  track(name: AnalyticsEvent, props?: AnalyticsProps): void {
-    this._events = [...this._events, { name, props }];
+  // Signature kept for the Analytics contract; arguments are
+  // intentionally unused.
+  track(_name: AnalyticsEvent, _props?: AnalyticsProps): void {
+    // intentionally empty
   }
 }

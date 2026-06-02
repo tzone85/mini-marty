@@ -184,3 +184,55 @@ Use this to track your child's progress:
 - [ ] Created a multi-function program
 - [ ] Solved all 3 advanced challenges
 - [ ] Created their own original program from scratch!
+
+---
+
+## Troubleshooting on Windows
+
+Mini Marty runs on Windows 10 / 11 (PowerShell or Windows Terminal). Below are the most common rough edges.
+
+### Line endings
+
+Git on Windows usually converts `\n` to `\r\n`. The repo has not pinned a `.gitattributes` yet, so if your editor or a script trips on the difference, run:
+
+```powershell
+git config --global core.autocrlf input
+```
+
+This keeps the working tree as `\n` for source files while still letting Windows tools open them.
+
+### Installing on PowerShell
+
+Use PowerShell (not Command Prompt). If `npm install` fails with a script execution policy error:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+Then close and reopen the terminal and retry.
+
+### WebGL check
+
+The 3D scene needs WebGL. Open `chrome://gpu` in Chrome or `about:support` in Firefox; look for "WebGL: Hardware accelerated". If it says "Software only" or "Disabled":
+
+1. Update your graphics driver.
+2. In Chrome, enable `chrome://flags/#ignore-gpu-blocklist` if your GPU is on the blocklist but otherwise healthy.
+3. As a last resort, the Block Editor and Python Editor still work without WebGL; only the home-page scene degrades.
+
+### Long paths
+
+If `npm install` errors with `ENAMETOOLONG`, enable long paths:
+
+```powershell
+git config --global core.longpaths true
+```
+
+And in an admin PowerShell:
+
+```powershell
+New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+```
+
+### Antivirus slowing `node_modules`
+
+Windows Defender scans every file in `node_modules`, which can multiply install time. Add the project folder to Defender's exclusion list under Settings -> Virus & threat protection -> Exclusions if you control the machine.

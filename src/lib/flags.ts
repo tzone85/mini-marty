@@ -1,7 +1,6 @@
 export interface Flags {
   readonly analyticsEnabled: boolean;
   readonly sentryEnabled: boolean;
-  readonly pwaEnabled: boolean;
 }
 
 export function readFlags(
@@ -10,6 +9,5 @@ export function readFlags(
   return {
     analyticsEnabled: env.NEXT_PUBLIC_ANALYTICS === "vercel",
     sentryEnabled: Boolean(env.NEXT_PUBLIC_SENTRY_DSN),
-    pwaEnabled: env.NEXT_PUBLIC_PWA === "1",
   };
 }

@@ -22,6 +22,19 @@ export class PyodideLoader {
 
   constructor(private readonly deps: LoaderDeps) {}
 
+  getInstance(): PyodideInstance | null {
+    return this.instance;
+  }
+
+  isLoading(): boolean {
+    return this.inflight !== null && this.instance === null;
+  }
+
+  reset(): void {
+    this.instance = null;
+    this.inflight = null;
+  }
+
   async load(): Promise<PyodideInstance> {
     if (this.instance) return this.instance;
     if (this.inflight) return this.inflight;

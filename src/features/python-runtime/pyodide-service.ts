@@ -4,7 +4,6 @@ import {
   browserScriptInjector,
   browserGlobalLoaderReader,
 } from "./pyodide-loader";
-import { PyodideRegistry } from "./pyodide-registry";
 import { PyodideEventBus, type PyodideStateListener } from "./pyodide-events";
 
 export interface PyodideInstance {
@@ -16,7 +15,6 @@ export interface PyodideInstance {
 }
 
 const events = new PyodideEventBus();
-const registry = new PyodideRegistry();
 const loader = new PyodideLoader({
   injectScript: browserScriptInjector(),
   readGlobalLoader: browserGlobalLoaderReader(),
@@ -28,22 +26,19 @@ export function onStateChange(listener: PyodideStateListener): () => void {
 }
 
 export function getLoadingState(): PyodideLoadingState {
-  if (registry.getInstance()) return "ready";
+  if (loader.getInstance()) return "ready";
+  if (loader.isLoading()) return "loading";
   return "idle";
 }
 
 export function getInstance(): PyodideInstance | null {
-  return registry.getInstance();
+  return loader.getInstance();
 }
 
 export async function loadPyodide(): Promise<PyodideInstance> {
-  const existing = registry.getInstance();
-  if (existing) return existing;
-  const i = await loader.load();
-  registry.setInstance(i);
-  return i;
+  return loader.load();
 }
 
 export function resetForTesting(): void {
-  registry.reset();
+  loader.reset();
 }

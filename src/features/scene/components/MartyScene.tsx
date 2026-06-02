@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import type { VirtualMarty } from "@/features/marty/virtual-marty";
 import { MartyModel } from "./MartyModel";
@@ -16,12 +16,44 @@ interface MartySceneProps {
   readonly onModelReady?: (handle: MartyModelHandle) => void;
 }
 
+// Pause the render loop when the tab is hidden or the user prefers
+// reduced motion. Saves battery and respects WCAG 2.3.3.
+function useSceneActive(): boolean {
+  const [active, setActive] = useState(true);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    const reducedMotionMq = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)",
+    );
+
+    const evaluate = () => {
+      const visible = document.visibilityState !== "hidden";
+      const reducedMotion = reducedMotionMq?.matches ?? false;
+      setActive(visible && !reducedMotion);
+    };
+
+    evaluate();
+    document.addEventListener("visibilitychange", evaluate);
+    reducedMotionMq?.addEventListener?.("change", evaluate);
+
+    return () => {
+      document.removeEventListener("visibilitychange", evaluate);
+      reducedMotionMq?.removeEventListener?.("change", evaluate);
+    };
+  }, []);
+
+  return active;
+}
+
 export function MartyScene({
   config: configOverrides,
   marty = null,
   onModelReady,
 }: MartySceneProps) {
   const modelRef = useRef<MartyModelHandle>(null);
+  const active = useSceneActive();
 
   const config: SceneConfig = {
     ...DEFAULT_SCENE_CONFIG,
@@ -45,6 +77,8 @@ export function MartyScene({
       data-testid="marty-scene"
     >
       <Canvas
+        frameloop={active ? "always" : "demand"}
+        dpr={[1, 2]}
         camera={{
           position: [...config.cameraPosition],
           fov: 50,

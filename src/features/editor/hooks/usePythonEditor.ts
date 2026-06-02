@@ -11,12 +11,10 @@ const pythonStorage = createSafeStorage(STORAGE_KEY, PythonStateSchema);
 
 function migrateLegacyPython(): void {
   if (typeof window === "undefined") return;
-  migrateRawString(
-    window.localStorage,
-    LEGACY_KEY,
-    STORAGE_KEY,
-    (raw) => ({ version: 1 as const, source: raw }),
-  );
+  migrateRawString(window.localStorage, LEGACY_KEY, STORAGE_KEY, (raw) => ({
+    version: 1 as const,
+    source: raw,
+  }));
 }
 
 export function usePythonEditor() {

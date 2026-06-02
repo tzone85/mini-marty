@@ -15,12 +15,10 @@ const blocksStorage = createSafeStorage(STORAGE_KEY, BlocksStateSchema);
 
 function migrateLegacyBlocks(): void {
   if (typeof window === "undefined") return;
-  migrateRawString(
-    window.localStorage,
-    LEGACY_KEY,
-    STORAGE_KEY,
-    (raw) => ({ version: 1 as const, xml: raw }),
-  );
+  migrateRawString(window.localStorage, LEGACY_KEY, STORAGE_KEY, (raw) => ({
+    version: 1 as const,
+    xml: raw,
+  }));
 }
 
 export function BlocklyWorkspace() {

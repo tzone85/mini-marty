@@ -21,7 +21,7 @@ Configured in `vitest.config.ts`. Lines / Statements / Functions / Branches each
 - `e2e/block-editor.spec.ts` — block program compiles and runs
 - `e2e/tutorials.spec.ts` and `e2e/challenges.spec.ts` — content shape
 - `e2e/dark-mode.spec.ts` — theme persistence
-- `e2e/keyboard-nav.spec.ts` — tab order, focus rings
+- `e2e/keyboard.spec.ts` — tab order, focus rings
 - `e2e/a11y.spec.ts` — `@axe-core/playwright` scan on each route
 
 ## Running locally
@@ -36,4 +36,4 @@ npx playwright install chromium  # one-time
 ## What we do not test
 
 - Three.js render output (covered by visual smoke in dev, not by unit)
-- Pyodide internals (vendored, pinned by SHA)
+- Pyodide internals (vendored, pinned by version string in `PYODIDE_VERSION`)

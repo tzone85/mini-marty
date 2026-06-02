@@ -12,7 +12,11 @@ Mini Marty is a static + middleware Next.js app deployed to Vercel.
 
 ## Vercel config
 
-`vercel.json` sets the Node version, build command, and security headers consistent with `middleware.ts`. CSP is set at the middleware level; Vercel's edge does not need to know.
+`vercel.json` sets the framework, build command, and install command. CSP and other security headers are emitted by `proxy.ts` at request time; Vercel's edge does not need to know.
+
+### Why `--legacy-peer-deps`
+
+`installCommand` is `npm ci --legacy-peer-deps`. The app uses React 19, which is ahead of the peer range some transitive packages (notably `@vercel/analytics`) declare. `--legacy-peer-deps` keeps `npm ci` from failing on a peer-range mismatch we know is safe; remove the flag once the upstream peer ranges catch up.
 
 ## Feature flags
 
@@ -20,8 +24,8 @@ Mini Marty is a static + middleware Next.js app deployed to Vercel.
 
 | Flag | Purpose |
 |---|---|
-| `NEXT_PUBLIC_SENTRY_ENABLED` | Toggle Sentry reporter; default off |
-| `NEXT_PUBLIC_ANALYTICS_ENABLED` | Toggle Vercel Analytics; default off |
+| `NEXT_PUBLIC_SENTRY_DSN` | Sentry DSN — when set, `SentryErrorReporter` replaces `MemoryErrorReporter` |
+| `NEXT_PUBLIC_ANALYTICS` | Set to `vercel` to enable `VercelAnalytics`; any other value (including unset) leaves `NoopAnalytics` in place |
 
 Off by default, opt-in via Vercel env UI. No flag toggles destructive behaviour.
 

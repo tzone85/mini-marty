@@ -20,7 +20,7 @@ Mini Marty is a layered Next.js app. Each layer depends only on those below it.
 - Observability: `ObservabilityProvider` injects `Logger` + `ErrorReporter`
 - Analytics: `AnalyticsProvider` injects an `Analytics` port; `VercelAnalytics` or `NoopAnalytics`
 - Theming: `ThemeProvider` toggles Tailwind dark class
-- Security: `middleware.ts` sets CSP with per-request nonce
+- Security: `proxy.ts` sets a static CSP plus companion hardening headers
 
 ## Module dependency graph
 

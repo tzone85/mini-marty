@@ -4,7 +4,7 @@ Operational guide for diagnosing failures in production and local dev.
 
 ## Symptom: blank white screen on load
 
-1. Check the browser DevTools console for CSP violations -- the nonce mismatch is the most common cause when `middleware.ts` changes.
+1. Check the browser DevTools console for CSP violations -- the most common cause is a `connect-src` or `script-src` directive in `proxy.ts` that does not yet allow a newly added origin.
 2. Confirm `next/dynamic` is loading the canvas. `data-testid="scene-container"` should be present; if `data-testid="scene-placeholder"` stays forever, the dynamic import is failing.
 3. Look at `ErrorBoundary` output: it renders "Something went wrong". If you see it, check `MemoryErrorReporter.entries` (dev) or Sentry (prod).
 
@@ -12,12 +12,12 @@ Operational guide for diagnosing failures in production and local dev.
 
 - Verify the `connect-src` CSP directive permits `cdn.jsdelivr.net`.
 - Check the network tab for the Pyodide bundle (around 6 MB). Slow networks can time out; `PyodideStatus` should render "error" with retry.
-- The loader is cached via `pyodide-registry`. Hard reload (Cmd+Shift+R) to reset.
+- The loader caches a single instance inside `PyodideLoader`. Hard reload (Cmd+Shift+R) to reset, or call `resetForTesting()` from `pyodide-service.ts` in a test harness.
 
 ## Symptom: blocks run but Marty does not move
 
-1. Open the Python editor, paste the compiled output (visible in `BlockCompiler` debug mode), run manually. If it works there, the issue is in `BlockCompiler`; otherwise it is in the runtime.
-2. Confirm `CommandQueue.size()` increases -- subscribe via `onCommandStart`.
+1. Open the Python editor, paste the same code into it, and run manually. If it works there, the issue is in the Blockly-to-Python emission path inside `BlocklyWorkspace`; otherwise it is in the runtime.
+2. Confirm `CommandQueue.size()` increases -- subscribe via `VirtualMarty.on("commandStart", ...)`.
 3. Confirm `AnimationPlayer` is mounted (the canvas exists).
 
 ## Symptom: tests pass locally but fail in CI

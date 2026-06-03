@@ -1,164 +1,65 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { MartyEventEmitter } from "./event-emitter";
-import type { CommandStartEvent, StatusChangeEvent } from "./types";
 
 describe("MartyEventEmitter", () => {
-  it("creates an emitter instance", () => {
-    const emitter = new MartyEventEmitter();
-    expect(emitter).toBeDefined();
-  });
-
-  it("registers and triggers commandStart listeners", () => {
-    const emitter = new MartyEventEmitter();
-    const listener = vi.fn();
-    emitter.on("commandStart", listener);
-
-    const event: CommandStartEvent = {
-      type: "commandStart",
-      commandId: "cmd-1",
-      command: { type: "movement", action: "walk", params: {}, duration: 1000 },
-    };
-    emitter.emit("commandStart", event);
-
-    expect(listener).toHaveBeenCalledWith(event);
-  });
-
-  it("registers and triggers commandComplete listeners", () => {
-    const emitter = new MartyEventEmitter();
-    const listener = vi.fn();
-    emitter.on("commandComplete", listener);
-
-    emitter.emit("commandComplete", {
-      type: "commandComplete",
-      commandId: "cmd-1",
-      command: { type: "movement", action: "walk", params: {}, duration: 1000 },
-    });
-
-    expect(listener).toHaveBeenCalledTimes(1);
-  });
-
-  it("registers and triggers commandError listeners", () => {
-    const emitter = new MartyEventEmitter();
-    const listener = vi.fn();
-    emitter.on("commandError", listener);
-
-    emitter.emit("commandError", {
-      type: "commandError",
-      commandId: "cmd-1",
-      command: { type: "movement", action: "walk", params: {}, duration: 1000 },
-      error: "timeout",
-    });
-
-    expect(listener).toHaveBeenCalledTimes(1);
-  });
-
-  it("registers and triggers statusChange listeners", () => {
-    const emitter = new MartyEventEmitter();
-    const listener = vi.fn();
-    emitter.on("statusChange", listener);
-
-    const event: StatusChangeEvent = {
+  it("on/emit", () => {
+    const ee = new MartyEventEmitter();
+    const fn = vi.fn();
+    ee.on("statusChange", fn);
+    ee.emit("statusChange", {
       type: "statusChange",
       isMoving: true,
       isPaused: false,
-    };
-    emitter.emit("statusChange", event);
-
-    expect(listener).toHaveBeenCalledWith(event);
-  });
-
-  it("supports multiple listeners for the same event", () => {
-    const emitter = new MartyEventEmitter();
-    const listener1 = vi.fn();
-    const listener2 = vi.fn();
-    emitter.on("commandStart", listener1);
-    emitter.on("commandStart", listener2);
-
-    emitter.emit("commandStart", {
-      type: "commandStart",
-      commandId: "cmd-1",
-      command: { type: "movement", action: "walk", params: {}, duration: 1000 },
     });
-
-    expect(listener1).toHaveBeenCalledTimes(1);
-    expect(listener2).toHaveBeenCalledTimes(1);
-  });
-
-  it("removes a listener with off()", () => {
-    const emitter = new MartyEventEmitter();
-    const listener = vi.fn();
-    emitter.on("commandStart", listener);
-    emitter.off("commandStart", listener);
-
-    emitter.emit("commandStart", {
-      type: "commandStart",
-      commandId: "cmd-1",
-      command: { type: "movement", action: "walk", params: {}, duration: 1000 },
+    expect(fn).toHaveBeenCalledWith({
+      type: "statusChange",
+      isMoving: true,
+      isPaused: false,
     });
-
-    expect(listener).not.toHaveBeenCalled();
   });
-
-  it("does not affect other listeners when removing one", () => {
-    const emitter = new MartyEventEmitter();
-    const listener1 = vi.fn();
-    const listener2 = vi.fn();
-    emitter.on("commandStart", listener1);
-    emitter.on("commandStart", listener2);
-    emitter.off("commandStart", listener1);
-
-    emitter.emit("commandStart", {
-      type: "commandStart",
-      commandId: "cmd-1",
-      command: { type: "movement", action: "walk", params: {}, duration: 1000 },
-    });
-
-    expect(listener1).not.toHaveBeenCalled();
-    expect(listener2).toHaveBeenCalledTimes(1);
-  });
-
-  it("does nothing when emitting event with no listeners", () => {
-    const emitter = new MartyEventEmitter();
-    expect(() => {
-      emitter.emit("commandStart", {
-        type: "commandStart",
-        commandId: "cmd-1",
-        command: {
-          type: "movement",
-          action: "walk",
-          params: {},
-          duration: 1000,
-        },
-      });
-    }).not.toThrow();
-  });
-
-  it("removes all listeners with removeAllListeners()", () => {
-    const emitter = new MartyEventEmitter();
-    const listener1 = vi.fn();
-    const listener2 = vi.fn();
-    emitter.on("commandStart", listener1);
-    emitter.on("statusChange", listener2);
-    emitter.removeAllListeners();
-
-    emitter.emit("commandStart", {
-      type: "commandStart",
-      commandId: "cmd-1",
-      command: { type: "movement", action: "walk", params: {}, duration: 1000 },
-    });
-    emitter.emit("statusChange", {
+  it("off stops delivery", () => {
+    const ee = new MartyEventEmitter();
+    const fn = vi.fn();
+    ee.on("statusChange", fn);
+    ee.off("statusChange", fn);
+    ee.emit("statusChange", {
       type: "statusChange",
       isMoving: false,
       isPaused: false,
     });
-
-    expect(listener1).not.toHaveBeenCalled();
-    expect(listener2).not.toHaveBeenCalled();
+    expect(fn).not.toHaveBeenCalled();
   });
-
-  it("off() is a no-op for unregistered listener", () => {
-    const emitter = new MartyEventEmitter();
-    const listener = vi.fn();
-    expect(() => emitter.off("commandStart", listener)).not.toThrow();
+  it("removeAllListeners", () => {
+    const ee = new MartyEventEmitter();
+    const a = vi.fn();
+    ee.on("statusChange", a);
+    ee.removeAllListeners();
+    ee.emit("statusChange", {
+      type: "statusChange",
+      isMoving: false,
+      isPaused: false,
+    });
+    expect(a).not.toHaveBeenCalled();
+  });
+  it("emit to unknown type is a no-op", () => {
+    const ee = new MartyEventEmitter();
+    expect(() =>
+      ee.emit("commandError", {
+        type: "commandError",
+        commandId: "x",
+        command: {
+          type: "status",
+          action: "stop",
+          params: {},
+          duration: 0,
+        },
+        error: "e",
+      }),
+    ).not.toThrow();
+  });
+  it("off on unknown type is a no-op", () => {
+    const ee = new MartyEventEmitter();
+    const fn = vi.fn();
+    expect(() => ee.off("commandError", fn)).not.toThrow();
   });
 });

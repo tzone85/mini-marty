@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" role="img" aria-labelledby="title desc">
+  <title id="title">Module dependency graph</title>
+  <desc id="desc">Boxes for each top-level folder. Arrows show import direction. app depends on components and features; features depend on lib; features/marty has no upstream dependencies.</desc>
+  <style>
+    .box { fill: #ffffff; stroke: #475569; stroke-width: 1.5; }
+    .label { fill: #0f172a; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 13px; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
+    .edge { stroke: #2563eb; stroke-width: 1.5; fill: none; }
+    @media (prefers-color-scheme: dark) {
+      .box { fill: #0f172a; stroke: #94a3b8; }
+      .label { fill: #e2e8f0; }
+      .edge { stroke: #60a5fa; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <!-- Row 1: app, components -->
+  <rect class="box" x="100" y="40" width="160" height="50" rx="8"/>
+  <text class="label" x="180" y="65">app/</text>
+
+  <rect class="box" x="740" y="40" width="160" height="50" rx="8"/>
+  <text class="label" x="820" y="65">components/</text>
+
+  <!-- Row 2: features (5 boxes) -->
+  <rect class="box" x="40" y="170" width="160" height="50" rx="8"/>
+  <text class="label" x="120" y="195">features/editor</text>
+
+  <rect class="box" x="220" y="170" width="160" height="50" rx="8"/>
+  <text class="label" x="300" y="195">features/blocks</text>
+
+  <rect class="box" x="400" y="170" width="200" height="50" rx="8"/>
+  <text class="label" x="500" y="195">features/python-runtime</text>
+
+  <rect class="box" x="620" y="170" width="160" height="50" rx="8"/>
+  <text class="label" x="700" y="195">features/scene</text>
+
+  <rect class="box" x="800" y="170" width="160" height="50" rx="8"/>
+  <text class="label" x="880" y="195">features/tutorials</text>
+
+  <!-- Row 3: marty, challenges -->
+  <rect class="box" x="280" y="320" width="200" height="50" rx="8"/>
+  <text class="label" x="380" y="345">features/marty</text>
+
+  <rect class="box" x="540" y="320" width="200" height="50" rx="8"/>
+  <text class="label" x="640" y="345">features/challenges</text>
+
+  <!-- Row 4: lib -->
+  <rect class="box" x="420" y="470" width="160" height="50" rx="8"/>
+  <text class="label" x="500" y="495">lib/</text>
+
+  <!-- Edges: app -> components, app -> each feature -->
+  <line class="edge" x1="220" y1="92" x2="350" y2="200" marker-end="url(#arrow)"/>
+  <line class="edge" x1="200" y1="92" x2="180" y2="170" marker-end="url(#arrow)"/>
+  <line class="edge" x1="260" y1="92" x2="280" y2="170" marker-end="url(#arrow)"/>
+  <line class="edge" x1="260" y1="92" x2="500" y2="170" marker-end="url(#arrow)"/>
+  <line class="edge" x1="260" y1="92" x2="680" y2="170" marker-end="url(#arrow)"/>
+  <line class="edge" x1="260" y1="92" x2="860" y2="170" marker-end="url(#arrow)"/>
+  <line class="edge" x1="260" y1="92" x2="380" y2="320" marker-end="url(#arrow)"/>
+  <line class="edge" x1="260" y1="92" x2="640" y2="320" marker-end="url(#arrow)"/>
+
+  <!-- components -> nothing (leaf) shown as standalone; in practice components/Header consumes lib -->
+  <line class="edge" x1="820" y1="92" x2="540" y2="470" marker-end="url(#arrow)"/>
+
+  <!-- features -> features/marty -->
+  <line class="edge" x1="120" y1="222" x2="320" y2="320" marker-end="url(#arrow)"/>
+  <line class="edge" x1="300" y1="222" x2="350" y2="320" marker-end="url(#arrow)"/>
+  <line class="edge" x1="500" y1="222" x2="400" y2="320" marker-end="url(#arrow)"/>
+  <line class="edge" x1="700" y1="222" x2="440" y2="320" marker-end="url(#arrow)"/>
+
+  <!-- features -> lib -->
+  <line class="edge" x1="120" y1="222" x2="450" y2="470" marker-end="url(#arrow)"/>
+  <line class="edge" x1="500" y1="222" x2="500" y2="470" marker-end="url(#arrow)"/>
+  <line class="edge" x1="700" y1="222" x2="540" y2="470" marker-end="url(#arrow)"/>
+
+  <!-- marty -> lib -->
+  <line class="edge" x1="380" y1="370" x2="480" y2="470" marker-end="url(#arrow)"/>
+</svg>

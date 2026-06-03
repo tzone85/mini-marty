@@ -1,5 +1,6 @@
 export interface SidebarItem {
   readonly label: string;
+  readonly href?: string;
 }
 
 export interface SidebarSection {
@@ -11,9 +12,9 @@ const HOME_SECTIONS: readonly SidebarSection[] = [
   {
     title: "Quick Start",
     items: [
-      { label: "Block Coding" },
-      { label: "Python Coding" },
-      { label: "Tutorials" },
+      { label: "Block Coding", href: "/block-editor" },
+      { label: "Python Coding", href: "/python-editor" },
+      { label: "Tutorials", href: "/tutorials" },
     ],
   },
   {
@@ -77,27 +78,12 @@ const CHALLENGES_SECTIONS: readonly SidebarSection[] = [
   },
 ];
 
-const DOCS_SECTIONS: readonly SidebarSection[] = [
-  {
-    title: "Documentation",
-    items: [
-      { label: "Quick Start Guide" },
-      { label: "Block Reference" },
-      { label: "Python API" },
-      { label: "Parent & Teacher" },
-      { label: "Keyboard Shortcuts" },
-      { label: "FAQ & Troubleshooting" },
-    ],
-  },
-];
-
 const SECTION_MAP: Readonly<Record<string, readonly SidebarSection[]>> = {
   "/": HOME_SECTIONS,
   "/block-editor": BLOCK_EDITOR_SECTIONS,
   "/python-editor": PYTHON_EDITOR_SECTIONS,
   "/tutorials": TUTORIALS_SECTIONS,
   "/challenges": CHALLENGES_SECTIONS,
-  "/docs": DOCS_SECTIONS,
 };
 
 export function getSidebarSections(

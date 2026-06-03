@@ -61,6 +61,7 @@ export function PyodideStatus({ state, error, onRetry }: PyodideStatusProps) {
             </span>
           )}
           <button
+            type="button"
             onClick={onRetry}
             className="text-xs text-blue-500 hover:text-blue-400 underline"
             data-testid="pyodide-retry"

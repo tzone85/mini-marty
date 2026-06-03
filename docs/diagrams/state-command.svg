@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" role="img" aria-labelledby="title desc">
+  <title id="title">Command lifecycle state diagram</title>
+  <desc id="desc">States: an initial dot transitions to pending; pending transitions to running on dequeue; running self-loops while animating; running transitions to completed on success or to error on failure. Completed and error are terminal.</desc>
+  <style>
+    .state { fill: #ffffff; stroke: #475569; stroke-width: 1.5; }
+    .terminal { fill: #ffffff; stroke: #475569; stroke-width: 1.5; }
+    .label { fill: #0f172a; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 14px; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
+    .edge { stroke: #2563eb; stroke-width: 1.5; fill: none; }
+    .edge-label { fill: #0f172a; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 12px; text-anchor: middle; }
+    .initial { fill: #0f172a; }
+    @media (prefers-color-scheme: dark) {
+      .state, .terminal { fill: #0f172a; stroke: #94a3b8; }
+      .label { fill: #e2e8f0; }
+      .edge { stroke: #60a5fa; }
+      .edge-label { fill: #e2e8f0; }
+      .initial { fill: #e2e8f0; }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <!-- Initial dot -->
+  <circle class="initial" cx="80" cy="300" r="8"/>
+
+  <!-- Pending -->
+  <rect class="state" x="170" y="265" width="160" height="70" rx="10"/>
+  <text class="label" x="250" y="300">pending</text>
+
+  <!-- Running -->
+  <rect class="state" x="430" y="265" width="160" height="70" rx="10"/>
+  <text class="label" x="510" y="300">running</text>
+
+  <!-- Completed -->
+  <rect class="terminal" x="730" y="170" width="200" height="70" rx="35"/>
+  <text class="label" x="830" y="205">completed</text>
+
+  <!-- Error -->
+  <rect class="terminal" x="730" y="360" width="200" height="70" rx="35"/>
+  <text class="label" x="830" y="395">error</text>
+
+  <!-- Edges -->
+  <line class="edge" x1="88" y1="300" x2="167" y2="300" marker-end="url(#arrow)"/>
+
+  <line class="edge" x1="330" y1="300" x2="427" y2="300" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="378" y="290">dequeue</text>
+
+  <!-- self-loop on running -->
+  <path class="edge" d="M 580 270 C 640 220, 640 220, 580 280" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="640" y="245">tick</text>
+
+  <line class="edge" x1="590" y1="290" x2="730" y2="220" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="660" y="245">success</text>
+
+  <line class="edge" x1="590" y1="320" x2="730" y2="380" marker-end="url(#arrow)"/>
+  <text class="edge-label" x="660" y="365">failure</text>
+</svg>

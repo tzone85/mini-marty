@@ -1,67 +1,42 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
 import ChallengesPage from "./page";
 
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn() }),
-}));
-
-vi.mock("@/features/challenges/hooks/useChallengeProgress", () => ({
-  useChallengeProgress: () => ({
-    state: { attempts: {}, badges: [] },
-    startChallenge: vi.fn(),
-    completedCount: 0,
-    badgeCount: 0,
-  }),
-}));
-
-describe("Challenges page", () => {
-  it("renders the heading", () => {
+describe("ChallengesPage", () => {
+  it("renders the heading and difficulty filter buttons", () => {
     render(<ChallengesPage />);
     expect(
-      screen.getByRole("heading", { name: /challenges/i }),
+      screen.getByRole("heading", { name: /^challenges$/i, level: 1 }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /^beginner/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /^intermediate/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /^advanced/i }),
     ).toBeInTheDocument();
   });
 
-  it("renders a description", () => {
+  it("filters the listing to a single difficulty when a tier filter is clicked", () => {
     render(<ChallengesPage />);
-    expect(screen.getByText(/programming puzzles/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /^beginner/i }));
+    // At least one beginner challenge title should still appear.
+    expect(
+      screen.getByRole("button", { name: /first walk/i }),
+    ).toBeInTheDocument();
   });
 
-  it("renders challenge summary", () => {
+  it("opens a challenge detail view and reveals hints one at a time", () => {
     render(<ChallengesPage />);
-    expect(screen.getByTestId("challenge-summary")).toHaveTextContent(
-      "0 of 7 challenges completed",
-    );
-  });
-
-  it("renders difficulty sections", () => {
-    render(<ChallengesPage />);
-    expect(screen.getByTestId("challenges-beginner")).toBeInTheDocument();
-    expect(screen.getByTestId("challenges-intermediate")).toBeInTheDocument();
-    expect(screen.getByTestId("challenges-advanced")).toBeInTheDocument();
-  });
-
-  it("renders all 7 challenge cards", () => {
-    render(<ChallengesPage />);
-    expect(screen.getByTestId("challenge-card-first-walk")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /first walk/i }));
     expect(
-      screen.getByTestId("challenge-card-dance-party"),
+      screen.getByRole("button", { name: /back to challenges/i }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("challenge-card-kick-master"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("challenge-card-loop-walker"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("challenge-card-dance-routine"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("challenge-card-sensor-detective"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("challenge-card-ultimate-routine"),
-    ).toBeInTheDocument();
+    // First hint should be hidden until revealed
+    expect(screen.getByText(/0 of/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /reveal next hint/i }));
+    expect(screen.getByText(/1 of/i)).toBeInTheDocument();
   });
 });

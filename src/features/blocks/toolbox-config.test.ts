@@ -1,55 +1,52 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import { TOOLBOX_CONFIG } from "./toolbox-config";
+import { MARTY_BLOCKS } from "./marty-blocks";
 
 describe("TOOLBOX_CONFIG", () => {
-  it("has kind set to categoryToolbox", () => {
+  it("declares a categoryToolbox", () => {
     expect(TOOLBOX_CONFIG.kind).toBe("categoryToolbox");
+    expect(TOOLBOX_CONFIG.contents.length).toBeGreaterThan(0);
   });
 
-  it("has Motion category", () => {
-    const motion = TOOLBOX_CONFIG.contents.find((c) => c.name === "Motion");
-    expect(motion).toBeDefined();
-    expect(motion!.kind).toBe("category");
+  it("includes a category for every BlockCategory plus Variables + Operators", () => {
+    const names = TOOLBOX_CONFIG.contents.map((c) => c.name);
+    expect(names).toContain("Motion");
+    expect(names).toContain("Sound");
+    expect(names).toContain("Sensing");
+    expect(names).toContain("Events");
+    expect(names).toContain("Control");
+    expect(names).toContain("Variables");
+    expect(names).toContain("Operators");
   });
 
-  it("has Sound category", () => {
-    const sound = TOOLBOX_CONFIG.contents.find((c) => c.name === "Sound");
-    expect(sound).toBeDefined();
-  });
-
-  it("has Sensing category", () => {
-    const sensing = TOOLBOX_CONFIG.contents.find((c) => c.name === "Sensing");
-    expect(sensing).toBeDefined();
-  });
-
-  it("has Events category", () => {
-    const events = TOOLBOX_CONFIG.contents.find((c) => c.name === "Events");
-    expect(events).toBeDefined();
-  });
-
-  it("has Control category", () => {
-    const control = TOOLBOX_CONFIG.contents.find((c) => c.name === "Control");
-    expect(control).toBeDefined();
-  });
-
-  it("has Variables category", () => {
-    const vars = TOOLBOX_CONFIG.contents.find((c) => c.name === "Variables");
-    expect(vars).toBeDefined();
-  });
-
-  it("has at least 7 categories", () => {
-    expect(TOOLBOX_CONFIG.contents.length).toBeGreaterThanOrEqual(7);
-  });
-
-  it("Motion category contains walk block", () => {
-    const motion = TOOLBOX_CONFIG.contents.find((c) => c.name === "Motion");
-    const blockTypes = motion!.contents?.map((b) => b.type);
-    expect(blockTypes).toContain("marty_walk");
-  });
-
-  it("each category has a colour", () => {
-    for (const category of TOOLBOX_CONFIG.contents) {
-      expect(category.colour).toBeTruthy();
+  it("each named block category lists at least one block", () => {
+    const blockCategories = ["Motion", "Sound", "Sensing", "Events", "Control"];
+    for (const name of blockCategories) {
+      const cat = TOOLBOX_CONFIG.contents.find((c) => c.name === name);
+      expect(cat).toBeDefined();
+      expect(cat!.contents).toBeDefined();
+      expect(cat!.contents!.length).toBeGreaterThan(0);
     }
+  });
+
+  it("only references block types defined in MARTY_BLOCKS", () => {
+    const definedTypes = new Set(MARTY_BLOCKS.map((b) => b.type));
+    for (const cat of TOOLBOX_CONFIG.contents) {
+      if (!cat.contents) continue;
+      for (const block of cat.contents) {
+        expect(definedTypes.has(block.type)).toBe(true);
+      }
+    }
+  });
+
+  it("uses dynamic (custom) categories for Variables and Operators", () => {
+    const variables = TOOLBOX_CONFIG.contents.find(
+      (c) => c.name === "Variables",
+    );
+    const operators = TOOLBOX_CONFIG.contents.find(
+      (c) => c.name === "Operators",
+    );
+    expect(variables?.custom).toBe("VARIABLE");
+    expect(operators?.custom).toBe("PROCEDURE");
   });
 });

@@ -1,61 +1,38 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, expect, it } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
 import TutorialsPage from "./page";
 
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: vi.fn() }),
-}));
-
-vi.mock("@/features/tutorials/hooks/useTutorialProgress", () => ({
-  useTutorialProgress: () => ({
-    state: { progress: {} },
-    startTutorial: vi.fn(),
-    completedCount: 0,
-  }),
-}));
-
-describe("Tutorials page", () => {
-  it("renders the heading", () => {
+describe("TutorialsPage", () => {
+  it("renders the heading and API reference section", () => {
     render(<TutorialsPage />);
     expect(
-      screen.getByRole("heading", { name: /tutorials/i }),
+      screen.getByRole("heading", { name: /^tutorials$/i, level: 1 }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: /api quick reference/i }),
     ).toBeInTheDocument();
   });
 
-  it("renders a description", () => {
+  it("opens a tutorial when its card is clicked, then closes it via Back", () => {
     render(<TutorialsPage />);
-    expect(screen.getByText(/step-by-step/i)).toBeInTheDocument();
-  });
-
-  it("renders the tutorials grid", () => {
-    render(<TutorialsPage />);
-    expect(screen.getByTestId("tutorials-grid")).toBeInTheDocument();
-  });
-
-  it("renders all 6 tutorial cards", () => {
-    render(<TutorialsPage />);
-    expect(screen.getByTestId("tutorial-card-first-steps")).toBeInTheDocument();
+    const card = screen.getByRole("button", { name: /hello marty/i });
+    fireEvent.click(card);
     expect(
-      screen.getByTestId("tutorial-card-movement-mastery"),
+      screen.getByRole("button", { name: /back to tutorials/i }),
     ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /back to tutorials/i }));
     expect(
-      screen.getByTestId("tutorial-card-dance-sequences"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("tutorial-card-loops-and-repetition"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("tutorial-card-sensors-and-decisions"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("tutorial-card-python-basics"),
+      screen.getByRole("heading", { name: /^tutorials$/i, level: 1 }),
     ).toBeInTheDocument();
   });
 
-  it("shows progress summary", () => {
+  it("navigates between tutorial steps with Next and Previous", () => {
     render(<TutorialsPage />);
-    expect(screen.getByTestId("progress-summary")).toHaveTextContent(
-      "0 of 6 tutorials completed",
-    );
+    fireEvent.click(screen.getByRole("button", { name: /hello marty/i }));
+    expect(screen.getByText(/step 1 of/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /^next$/i }));
+    expect(screen.getByText(/step 2 of/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /^previous$/i }));
+    expect(screen.getByText(/step 1 of/i)).toBeInTheDocument();
   });
 });

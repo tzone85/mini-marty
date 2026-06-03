@@ -5,18 +5,25 @@ import {
   createMartyBridge,
   MARTYPY_MODULE_CODE,
   wrapUserCode,
+  EXECUTION_WRAPPER_PRELUDE_LINES,
 } from "./martypy-module";
 
-let entryCounter = 0;
-
-function createEntry(type: ConsoleEntry["type"], text: string): ConsoleEntry {
-  entryCounter += 1;
-  return {
-    id: `entry-${entryCounter}`,
-    type,
-    text,
-    timestamp: Date.now(),
-  };
+/**
+ * Stateful generator for monotonic console-entry ids. One instance per
+ * `executePythonCode` invocation keeps ids deterministic and avoids
+ * module-level mutable state.
+ */
+class EntryFactory {
+  private counter = 0;
+  create(type: ConsoleEntry["type"], text: string): ConsoleEntry {
+    this.counter += 1;
+    return {
+      id: `entry-${this.counter}`,
+      type,
+      text,
+      timestamp: Date.now(),
+    };
+  }
 }
 
 export function formatPythonError(error: string): string {
@@ -26,7 +33,10 @@ export function formatPythonError(error: string): string {
   for (const line of lines) {
     const lineMatch = line.match(/line (\d+)/);
     if (lineMatch) {
-      const adjustedLine = Math.max(1, parseInt(lineMatch[1], 10) - 5);
+      const adjustedLine = Math.max(
+        1,
+        parseInt(lineMatch[1], 10) - EXECUTION_WRAPPER_PRELUDE_LINES,
+      );
       formatted.push(line.replace(/line \d+/, `line ${adjustedLine}`));
     } else {
       formatted.push(line);
@@ -57,15 +67,17 @@ export async function executePythonCode(
   code: string,
   callbacks: ExecutorCallbacks,
 ): Promise<PythonExecutionResult> {
+  const entries = new EntryFactory();
+
   pyodide.setStdout({
     batched: (text: string) => {
-      callbacks.onStdout(createEntry("stdout", text));
+      callbacks.onStdout(entries.create("stdout", text));
     },
   });
 
   pyodide.setStderr({
     batched: (text: string) => {
-      callbacks.onStderr(createEntry("stderr", text));
+      callbacks.onStderr(entries.create("stderr", text));
     },
   });
 
@@ -83,12 +95,8 @@ export async function executePythonCode(
   } catch (err) {
     const rawMessage = err instanceof Error ? err.message : String(err);
     const formattedError = formatPythonError(rawMessage);
-    callbacks.onStderr(createEntry("stderr", formattedError));
+    callbacks.onStderr(entries.create("stderr", formattedError));
 
     return { success: false, error: formattedError };
   }
-}
-
-export function resetEntryCounter(): void {
-  entryCounter = 0;
 }

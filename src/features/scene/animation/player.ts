@@ -58,10 +58,8 @@ function interpolateSequence(
     return keyframes[0].pose;
   }
 
-  // Clamp progress to [0, 1]
   const clampedProgress = Math.max(0, Math.min(1, progress));
 
-  // Find the two surrounding keyframes
   let beforeIndex = 0;
   for (let i = 0; i < keyframes.length - 1; i++) {
     if (keyframes[i].time <= clampedProgress) {
@@ -156,5 +154,4 @@ export class AnimationPlayer {
   }
 }
 
-// Export for testing
 export { lerp, lerpJoints, lerpEyes, lerpPose, interpolateSequence };

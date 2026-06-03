@@ -136,6 +136,20 @@ async def __run_user_code():
 asyncio.ensure_future(__run_user_code())
 `;
 
+/**
+ * Number of newlines in `EXECUTION_WRAPPER_CODE` that precede the
+ * `{user_code}` placeholder. `formatPythonError` subtracts this from
+ * Python's reported line numbers so the user sees their own line
+ * numbering, not the wrapper's.
+ *
+ * Derived at load time so any edit to the template re-syncs the
+ * offset automatically.
+ */
+export const EXECUTION_WRAPPER_PRELUDE_LINES = (() => {
+  const before = EXECUTION_WRAPPER_CODE.split("{user_code}")[0];
+  return (before.match(/\n/g) ?? []).length;
+})();
+
 export function wrapUserCode(code: string): string {
   const indented = code
     .split("\n")

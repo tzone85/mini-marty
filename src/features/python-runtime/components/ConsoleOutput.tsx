@@ -32,6 +32,7 @@ export function ConsoleOutput({ entries, onClear }: ConsoleOutputProps) {
       <div className="flex items-center justify-between border-b border-gray-700 bg-gray-900 px-3 py-1.5">
         <span className="text-xs font-medium text-gray-400">Console</span>
         <button
+          type="button"
           onClick={onClear}
           className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
           aria-label="Clear console"

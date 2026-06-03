@@ -2,7 +2,6 @@
 
 import { useMemo, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { PythonEditor } from "@/features/editor/components/PythonEditor";
 import { EditorToolbar } from "@/features/editor/components/EditorToolbar";
 import { usePythonEditor } from "@/features/editor/hooks/usePythonEditor";
 import { ConsoleOutput } from "@/features/python-runtime/components/ConsoleOutput";
@@ -11,12 +10,34 @@ import { usePyodide } from "@/features/python-runtime/hooks/usePyodide";
 import { usePythonExecution } from "@/features/python-runtime/hooks/usePythonExecution";
 import { VirtualMarty } from "@/features/marty/virtual-marty";
 
+const PythonEditor = dynamic(
+  () =>
+    import("@/features/editor/components/PythonEditor").then(
+      (mod) => mod.PythonEditor,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-full items-center justify-center text-sm text-gray-400">
+        Loading editor...
+      </div>
+    ),
+  },
+);
+
 const MartyScene = dynamic(
   () =>
     import("@/features/scene/components/MartyScene").then(
       (mod) => mod.MartyScene,
     ),
-  { ssr: false },
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-full items-center justify-center text-sm text-gray-400">
+        Loading 3D scene...
+      </div>
+    ),
+  },
 );
 
 export default function PythonEditorPage() {

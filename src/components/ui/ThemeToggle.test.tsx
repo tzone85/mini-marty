@@ -1,46 +1,27 @@
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { describe, it, expect, beforeEach } from "vitest";
-import { ThemeProvider } from "@/lib/theme-context";
+import { describe, expect, it } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { ThemeToggle } from "./ThemeToggle";
-
-function renderWithTheme() {
-  return render(
-    <ThemeProvider>
-      <ThemeToggle />
-    </ThemeProvider>,
-  );
-}
+import { ThemeProvider } from "@/lib/theme-context";
 
 describe("ThemeToggle", () => {
-  beforeEach(() => {
-    localStorage.clear();
-    document.documentElement.classList.remove("dark", "light");
+  it("announces current state via aria-label", () => {
+    render(
+      <ThemeProvider>
+        <ThemeToggle />
+      </ThemeProvider>,
+    );
+    const btn = screen.getByRole("button");
+    expect(btn).toHaveAccessibleName(/switch to dark|switch to light/i);
   });
-
-  it("renders a toggle button", () => {
-    renderWithTheme();
-    expect(
-      screen.getByRole("button", { name: /toggle theme/i }),
-    ).toBeInTheDocument();
-  });
-
-  it("shows sun icon in light mode", () => {
-    renderWithTheme();
-    expect(screen.getByLabelText(/toggle theme/i)).toHaveTextContent("☀️");
-  });
-
-  it("shows moon icon in dark mode", async () => {
-    localStorage.setItem("mini-marty-theme", "dark");
-    renderWithTheme();
-    expect(screen.getByLabelText(/toggle theme/i)).toHaveTextContent("🌙");
-  });
-
-  it("toggles from light to dark on click", async () => {
-    const user = userEvent.setup();
-    renderWithTheme();
-
-    await user.click(screen.getByRole("button", { name: /toggle theme/i }));
-    expect(screen.getByLabelText(/toggle theme/i)).toHaveTextContent("🌙");
+  it("toggles aria-pressed on click", () => {
+    render(
+      <ThemeProvider>
+        <ThemeToggle />
+      </ThemeProvider>,
+    );
+    const btn = screen.getByRole("button");
+    const initial = btn.getAttribute("aria-pressed");
+    fireEvent.click(btn);
+    expect(btn.getAttribute("aria-pressed")).not.toBe(initial);
   });
 });

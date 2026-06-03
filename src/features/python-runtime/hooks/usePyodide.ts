@@ -7,6 +7,7 @@ import {
   getLoadingState,
   getInstance,
 } from "../pyodide-service";
+import { useObservability } from "@/lib/observability/provider";
 
 export interface UsePyodideResult {
   readonly state: PyodideLoadingState;
@@ -19,6 +20,7 @@ export function usePyodide(): UsePyodideResult {
   const [state, setState] = useState<PyodideLoadingState>(getLoadingState);
   const [error, setError] = useState<string | null>(null);
   const [instance, setInstance] = useState<PyodideInstance | null>(getInstance);
+  const { reporter } = useObservability();
 
   useEffect(() => {
     const unsubscribe = onStateChange(
@@ -43,8 +45,12 @@ export function usePyodide(): UsePyodideResult {
       const message =
         err instanceof Error ? err.message : "Failed to initialize Pyodide";
       setError(message);
+      // Pyodide load failure is a system error, not user-code; report
+      // it through the observability port. User-code Python errors are
+      // surfaced separately via formatPythonError and never reported.
+      reporter.report(err, { source: "system", component: "usePyodide" });
     }
-  }, []);
+  }, [reporter]);
 
   return { state, error, instance, initialize } as const;
 }

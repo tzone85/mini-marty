@@ -31,7 +31,8 @@ next-env.d.ts
 # IDE
 .vscode/
 .idea/
-<<<<<<< HEAD
-=======
+
+# hive agent working copies
+.hive/
+repos/
 firebase-debug.log
->>>>>>> origin/feature/REQ-I1QAV-1Z

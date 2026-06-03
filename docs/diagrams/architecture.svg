@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" role="img" aria-labelledby="title desc">
+  <title id="title">Mini Marty layered architecture</title>
+  <desc id="desc">Five horizontal bands from top to bottom: UI, Features, Engine, Runtime, Vendors. Each band contains the principal modules at that layer.</desc>
+  <style>
+    .band { fill: #f1f5f9; stroke: #94a3b8; stroke-width: 1.5; }
+    .band-label { fill: #0f172a; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 14px; font-weight: 600; }
+    .box { fill: #ffffff; stroke: #475569; stroke-width: 1.5; }
+    .label { fill: #0f172a; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 13px; text-anchor: middle; dominant-baseline: middle; }
+    @media (prefers-color-scheme: dark) {
+      .band { fill: #1e293b; stroke: #475569; }
+      .band-label { fill: #e2e8f0; }
+      .box { fill: #0f172a; stroke: #94a3b8; }
+      .label { fill: #e2e8f0; }
+    }
+  </style>
+
+  <!-- UI band -->
+  <rect class="band" x="20" y="30" width="960" height="90" rx="8"/>
+  <text class="band-label" x="40" y="55">UI</text>
+  <rect class="box" x="60" y="70" width="180" height="36" rx="8"/>
+  <text class="label" x="150" y="88">app/page.tsx</text>
+  <rect class="box" x="260" y="70" width="180" height="36" rx="8"/>
+  <text class="label" x="350" y="88">python-editor/page</text>
+  <rect class="box" x="460" y="70" width="180" height="36" rx="8"/>
+  <text class="label" x="550" y="88">block-editor/page</text>
+  <rect class="box" x="660" y="70" width="280" height="36" rx="8"/>
+  <text class="label" x="800" y="88">components/Header, Sidebar, ErrorBoundary</text>
+
+  <!-- Features band -->
+  <rect class="band" x="20" y="140" width="960" height="120" rx="8"/>
+  <text class="band-label" x="40" y="165">Features</text>
+  <rect class="box" x="60" y="180" width="170" height="36" rx="8"/>
+  <text class="label" x="145" y="198">features/editor</text>
+  <rect class="box" x="240" y="180" width="170" height="36" rx="8"/>
+  <text class="label" x="325" y="198">features/blocks</text>
+  <rect class="box" x="420" y="180" width="170" height="36" rx="8"/>
+  <text class="label" x="505" y="198">features/scene</text>
+  <rect class="box" x="600" y="180" width="170" height="36" rx="8"/>
+  <text class="label" x="685" y="198">features/tutorials</text>
+  <rect class="box" x="780" y="180" width="170" height="36" rx="8"/>
+  <text class="label" x="865" y="198">features/challenges</text>
+  <rect class="box" x="240" y="222" width="170" height="32" rx="8"/>
+  <text class="label" x="325" y="238">features/marty</text>
+  <rect class="box" x="420" y="222" width="170" height="32" rx="8"/>
+  <text class="label" x="505" y="238">features/python-runtime</text>
+
+  <!-- Engine band -->
+  <rect class="band" x="20" y="280" width="960" height="80" rx="8"/>
+  <text class="band-label" x="40" y="305">Engine</text>
+  <rect class="box" x="100" y="320" width="200" height="30" rx="8"/>
+  <text class="label" x="200" y="335">VirtualMarty</text>
+  <rect class="box" x="320" y="320" width="200" height="30" rx="8"/>
+  <text class="label" x="420" y="335">CommandQueue</text>
+  <rect class="box" x="540" y="320" width="200" height="30" rx="8"/>
+  <text class="label" x="640" y="335">MartyEventEmitter</text>
+  <rect class="box" x="760" y="320" width="160" height="30" rx="8"/>
+  <text class="label" x="840" y="335">Clock</text>
+
+  <!-- Runtime band -->
+  <rect class="band" x="20" y="380" width="960" height="80" rx="8"/>
+  <text class="band-label" x="40" y="405">Runtime</text>
+  <rect class="box" x="100" y="420" width="220" height="30" rx="8"/>
+  <text class="label" x="210" y="435">executePythonCode</text>
+  <rect class="box" x="340" y="420" width="220" height="30" rx="8"/>
+  <text class="label" x="450" y="435">registerMartyModule</text>
+  <rect class="box" x="580" y="420" width="220" height="30" rx="8"/>
+  <text class="label" x="690" y="435">AnimationPlayer</text>
+  <rect class="box" x="820" y="420" width="120" height="30" rx="8"/>
+  <text class="label" x="880" y="435">pyodide-loader</text>
+
+  <!-- Vendors band -->
+  <rect class="band" x="20" y="480" width="960" height="90" rx="8"/>
+  <text class="band-label" x="40" y="505">Vendors</text>
+  <rect class="box" x="100" y="520" width="140" height="36" rx="8"/>
+  <text class="label" x="170" y="538">Pyodide</text>
+  <rect class="box" x="260" y="520" width="140" height="36" rx="8"/>
+  <text class="label" x="330" y="538">Blockly</text>
+  <rect class="box" x="420" y="520" width="140" height="36" rx="8"/>
+  <text class="label" x="490" y="538">Monaco</text>
+  <rect class="box" x="580" y="520" width="140" height="36" rx="8"/>
+  <text class="label" x="650" y="538">three.js</text>
+  <rect class="box" x="740" y="520" width="200" height="36" rx="8"/>
+  <text class="label" x="840" y="538">React Three Fiber</text>
+</svg>

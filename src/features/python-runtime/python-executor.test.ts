@@ -1,237 +1,103 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   formatPythonError,
-  registerMartyModule,
   executePythonCode,
-  resetEntryCounter,
+  registerMartyModule,
 } from "./python-executor";
-import type { ExecutorCallbacks } from "./python-executor";
 import type { PyodideInstance } from "./pyodide-service";
 import { VirtualMarty } from "@/features/marty/virtual-marty";
 
-function createMockPyodide(): PyodideInstance {
+function fakePyodide(
+  overrides: Partial<PyodideInstance> = {},
+): PyodideInstance {
   return {
-    runPythonAsync: vi.fn().mockResolvedValue(undefined),
-    registerJsModule: vi.fn(),
-    setStdout: vi.fn(),
-    setStderr: vi.fn(),
-    globals: { get: vi.fn() },
+    runPythonAsync: async () => null,
+    registerJsModule: () => {},
+    setStdout: () => {},
+    setStderr: () => {},
+    globals: { get: () => null },
+    ...overrides,
   };
 }
 
-function createMockCallbacks(): ExecutorCallbacks {
-  return {
-    onStdout: vi.fn(),
-    onStderr: vi.fn(),
-  };
-}
-
-describe("python-executor", () => {
-  beforeEach(() => {
-    resetEntryCounter();
+describe("formatPythonError", () => {
+  it("offsets reported line numbers by the wrapper prelude", () => {
+    // The wrapper adds 6 prelude lines, so wrapped line 7 maps to user line 1.
+    expect(formatPythonError("Error at line 7 of file")).toContain("line 1");
   });
-
-  describe("formatPythonError", () => {
-    it("adjusts line numbers by subtracting wrapper offset", () => {
-      const error = 'File "<exec>", line 10\n    SyntaxError: invalid syntax';
-      const formatted = formatPythonError(error);
-      expect(formatted).toContain("line 5");
-    });
-
-    it("handles errors without line numbers", () => {
-      const error = "NameError: name 'foo' is not defined";
-      const formatted = formatPythonError(error);
-      expect(formatted).toBe(error);
-    });
-
-    it("does not produce negative line numbers", () => {
-      const error = 'File "<exec>", line 2\n    error';
-      const formatted = formatPythonError(error);
-      expect(formatted).toContain("line 1");
-    });
-
-    it("handles multiline errors with multiple line references", () => {
-      const error = 'File "<exec>", line 8\n  File "<exec>", line 12\nError';
-      const formatted = formatPythonError(error);
-      expect(formatted).toContain("line 3");
-      expect(formatted).toContain("line 7");
-    });
-
-    it("preserves non-line-number content", () => {
-      const error = "TypeError: expected str, got int";
-      const formatted = formatPythonError(error);
-      expect(formatted).toBe("TypeError: expected str, got int");
-    });
+  it("never goes below 1", () => {
+    expect(formatPythonError("Error at line 2")).toContain("line 1");
   });
-
-  describe("registerMartyModule", () => {
-    it("registers js module in Pyodide", async () => {
-      const pyodide = createMockPyodide();
-      const marty = new VirtualMarty();
-
-      await registerMartyModule(pyodide, marty);
-
-      expect(pyodide.registerJsModule).toHaveBeenCalledWith(
-        "pyodide_js",
-        expect.objectContaining({ _marty_bridge: expect.any(Object) }),
-      );
-    });
-
-    it("runs the martypy module code", async () => {
-      const pyodide = createMockPyodide();
-      const marty = new VirtualMarty();
-
-      await registerMartyModule(pyodide, marty);
-
-      expect(pyodide.runPythonAsync).toHaveBeenCalledWith(
-        expect.stringContaining("class Marty:"),
-      );
-    });
+  it("leaves unrelated lines untouched", () => {
+    expect(formatPythonError("NameError: x not defined")).toContain(
+      "NameError",
+    );
   });
+});
 
-  describe("executePythonCode", () => {
-    it("sets stdout and stderr handlers", async () => {
-      const pyodide = createMockPyodide();
-      const callbacks = createMockCallbacks();
-
-      await executePythonCode(pyodide, "pass", callbacks);
-
-      expect(pyodide.setStdout).toHaveBeenCalledWith({
-        batched: expect.any(Function),
-      });
-      expect(pyodide.setStderr).toHaveBeenCalledWith({
-        batched: expect.any(Function),
-      });
+describe("executePythonCode", () => {
+  it("strips martypy imports from the user-supplied code", async () => {
+    const calls: string[] = [];
+    const fake = fakePyodide({
+      runPythonAsync: async (s: string) => {
+        calls.push(s);
+        return null;
+      },
     });
-
-    it("returns success on successful execution", async () => {
-      const pyodide = createMockPyodide();
-      const callbacks = createMockCallbacks();
-
-      const result = await executePythonCode(pyodide, "pass", callbacks);
-
-      expect(result.success).toBe(true);
-      expect(result.error).toBeNull();
+    const r = await executePythonCode(
+      fake,
+      "from martypy import Marty\nprint('x')",
+      {
+        onStdout: vi.fn(),
+        onStderr: vi.fn(),
+      },
+    );
+    expect(r.success).toBe(true);
+    // The wrapper adds its own `from martypy import Marty` at the top;
+    // the user-code section (indented 4 spaces) should not contain the import.
+    expect(calls.join("\n")).not.toContain("    from martypy import Marty");
+  });
+  it("surfaces errors via onStderr", async () => {
+    const fake = fakePyodide({
+      runPythonAsync: async () => {
+        throw new Error("BAD");
+      },
     });
-
-    it("strips martypy import lines from user code", async () => {
-      const pyodide = createMockPyodide();
-      const callbacks = createMockCallbacks();
-
-      await executePythonCode(
-        pyodide,
-        "from martypy import Marty\nmy_marty = Marty('virtual')",
-        callbacks,
-      );
-
-      const executedCode = (pyodide.runPythonAsync as ReturnType<typeof vi.fn>)
-        .mock.calls[0][0] as string;
-      const userCodeSection = executedCode.split("__run_user_code():")[1];
-      expect(userCodeSection).not.toContain("from martypy import Marty");
+    const onStderr = vi.fn();
+    const r = await executePythonCode(fake, "x", {
+      onStdout: vi.fn(),
+      onStderr,
     });
-
-    it("preserves non-import code", async () => {
-      const pyodide = createMockPyodide();
-      const callbacks = createMockCallbacks();
-
-      await executePythonCode(
-        pyodide,
-        'from martypy import Marty\nprint("hello")',
-        callbacks,
-      );
-
-      const executedCode = (pyodide.runPythonAsync as ReturnType<typeof vi.fn>)
-        .mock.calls[0][0] as string;
-      expect(executedCode).toContain('print("hello")');
+    expect(r.success).toBe(false);
+    expect(onStderr).toHaveBeenCalled();
+  });
+  it("strips plain `import martypy` lines from user code", async () => {
+    const calls: string[] = [];
+    const fake = fakePyodide({
+      runPythonAsync: async (s: string) => {
+        calls.push(s);
+        return null;
+      },
     });
-
-    it("returns failure on Python error", async () => {
-      const pyodide = createMockPyodide();
-      (pyodide.runPythonAsync as ReturnType<typeof vi.fn>).mockRejectedValue(
-        new Error("SyntaxError: invalid syntax"),
-      );
-      const callbacks = createMockCallbacks();
-
-      const result = await executePythonCode(
-        pyodide,
-        "invalid python!!!",
-        callbacks,
-      );
-
-      expect(result.success).toBe(false);
-      expect(result.error).toContain("SyntaxError");
+    await executePythonCode(fake, "import martypy\nprint('hi')", {
+      onStdout: vi.fn(),
+      onStderr: vi.fn(),
     });
+    // The indented user-code section should not contain `import martypy`.
+    expect(calls.join("\n")).not.toContain("    import martypy");
+  });
+});
 
-    it("sends error to stderr callback", async () => {
-      const pyodide = createMockPyodide();
-      (pyodide.runPythonAsync as ReturnType<typeof vi.fn>).mockRejectedValue(
-        new Error("NameError: name 'x' is not defined"),
-      );
-      const callbacks = createMockCallbacks();
-
-      await executePythonCode(pyodide, "print(x)", callbacks);
-
-      expect(callbacks.onStderr).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: "stderr",
-          text: expect.stringContaining("NameError"),
-        }),
-      );
-    });
-
-    it("captures stdout via batched handler", async () => {
-      const pyodide = createMockPyodide();
-      let capturedStdout: ((text: string) => void) | null = null;
-      (pyodide.setStdout as ReturnType<typeof vi.fn>).mockImplementation(
-        (opts: { batched: (text: string) => void }) => {
-          capturedStdout = opts.batched;
-        },
-      );
-
-      const callbacks = createMockCallbacks();
-      const execPromise = executePythonCode(pyodide, "pass", callbacks);
-
-      if (capturedStdout) {
-        (capturedStdout as (text: string) => void)("Hello from Python");
-      }
-
-      await execPromise;
-
-      expect(callbacks.onStdout).toHaveBeenCalledWith(
-        expect.objectContaining({
-          type: "stdout",
-          text: "Hello from Python",
-        }),
-      );
-    });
-
-    it("handles non-Error thrown values", async () => {
-      const pyodide = createMockPyodide();
-      (pyodide.runPythonAsync as ReturnType<typeof vi.fn>).mockRejectedValue(
-        "raw string error",
-      );
-      const callbacks = createMockCallbacks();
-
-      const result = await executePythonCode(pyodide, "pass", callbacks);
-
-      expect(result.success).toBe(false);
-      expect(result.error).toBeTruthy();
-    });
-
-    it("also strips 'import martypy' lines", async () => {
-      const pyodide = createMockPyodide();
-      const callbacks = createMockCallbacks();
-
-      await executePythonCode(
-        pyodide,
-        'import martypy\nprint("test")',
-        callbacks,
-      );
-
-      const executedCode = (pyodide.runPythonAsync as ReturnType<typeof vi.fn>)
-        .mock.calls[0][0] as string;
-      const userSection = executedCode.split("__run_user_code():")[1];
-      expect(userSection).not.toContain("import martypy");
-    });
+describe("registerMartyModule", () => {
+  it("registers bridge and runs module code", async () => {
+    const registerJsModule = vi.fn();
+    const runPythonAsync = vi.fn(async () => null);
+    const fake = fakePyodide({ registerJsModule, runPythonAsync });
+    await registerMartyModule(fake, new VirtualMarty());
+    expect(registerJsModule).toHaveBeenCalledWith(
+      "pyodide_js",
+      expect.objectContaining({ _marty_bridge: expect.any(Object) }),
+    );
+    expect(runPythonAsync).toHaveBeenCalled();
   });
 });

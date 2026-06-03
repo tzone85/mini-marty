@@ -1,0 +1,4 @@
+[submodule "repos/mini-marty"]
+	path = repos/mini-marty
+	url = https://github.com/tzone85/mini-marty.git
+	branch = main

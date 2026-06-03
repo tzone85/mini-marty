@@ -14,6 +14,26 @@ vi.mock("@/components/layout/AppShell", () => ({
 
 import RootLayout from "./layout";
 
+vi.mock("next/link", () => ({
+  default: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: React.ReactNode;
+    href: string;
+    className?: string;
+  }) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
+}));
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/",
+}));
+
 describe("RootLayout", () => {
   it("returns html with lang attribute and embeds AppShell", () => {
     const tree = RootLayout({ children: <p>Test content</p> });
@@ -21,5 +41,25 @@ describe("RootLayout", () => {
     // rendering it (which would nest <html> inside jsdom's existing <html>).
     expect(tree.type).toBe("html");
     expect((tree.props as { lang?: string }).lang).toBe("en");
+  });
+
+  it("includes the header with Mini Marty branding", () => {
+    render(
+      <RootLayout>
+        <p>Test content</p>
+      </RootLayout>,
+      { container: document.documentElement },
+    );
+    expect(screen.getByText("Mini Marty")).toBeInTheDocument();
+  });
+
+  it("includes navigation", () => {
+    render(
+      <RootLayout>
+        <p>Test content</p>
+      </RootLayout>,
+      { container: document.documentElement },
+    );
+    expect(screen.getByRole("navigation")).toBeInTheDocument();
   });
 });

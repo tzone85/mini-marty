@@ -8,8 +8,8 @@ import { KEYBOARD_SHORTCUTS_SECTION } from "./keyboard-shortcuts";
 import { FAQ_SECTION } from "./faq";
 
 describe("Documentation content", () => {
-  it("exports all 6 documentation sections", () => {
-    expect(ALL_DOC_SECTIONS).toHaveLength(6);
+  it("exports all 7 documentation sections", () => {
+    expect(ALL_DOC_SECTIONS).toHaveLength(7);
   });
 
   it("includes all required sections", () => {
@@ -20,6 +20,7 @@ describe("Documentation content", () => {
     expect(ids).toContain("parent-teacher");
     expect(ids).toContain("keyboard-shortcuts");
     expect(ids).toContain("faq");
+    expect(ids).toContain("about");
   });
 
   describe("Quick Start section", () => {

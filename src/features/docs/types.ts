@@ -40,7 +40,8 @@ export type DocSectionId =
   | "python-api"
   | "parent-teacher"
   | "keyboard-shortcuts"
-  | "faq";
+  | "faq"
+  | "about";
 
 export interface SearchResult {
   readonly sectionId: string;

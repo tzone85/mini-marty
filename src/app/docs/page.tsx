@@ -17,6 +17,7 @@ const SECTION_NAV: readonly {
   { id: "parent-teacher", label: "Parent & Teacher" },
   { id: "keyboard-shortcuts", label: "Shortcuts" },
   { id: "faq", label: "FAQ" },
+  { id: "about", label: "About & Credits" },
 ];
 
 export default function DocsPage() {

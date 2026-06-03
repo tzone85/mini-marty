@@ -8,3 +8,29 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 A copy of the License is included in the LICENSE file at the root
 of this repository.
+
+---
+
+Mini Marty is a fan-made educational re-implementation inspired by
+"Marty the Robot" by Robotical Ltd (Edinburgh, United Kingdom).
+
+"Marty" and "Marty the Robot" are trademarks of Robotical Ltd.
+This project is not affiliated with, endorsed by, or sponsored by
+Robotical Ltd. Trademark references in this project's source code,
+user interface, and documentation are descriptive and identify the
+hardware platform that inspired this educational software. For the
+official Marty experience with real hardware, please visit:
+
+  https://codemarty.com    (Robotical's web coding app for Marty)
+  https://robotical.io     (Robotical Ltd company site)
+
+The Python API surface exposed by `src/features/python-runtime/`
+follows the public method signatures of `martypy`
+(https://github.com/robotical/martypy), distributed under the
+Apache License 2.0 by Robotical Ltd. Code written for Mini Marty's
+virtual robot is therefore portable to the real Marty hardware via
+the official `martypy` library.
+
+This project ships no Robotical-owned source code, 3D models,
+artwork, audio, logos, or other brand assets. See
+`docs/ATTRIBUTION.md` for the full IP audit.

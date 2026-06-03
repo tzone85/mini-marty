@@ -5,6 +5,7 @@ import { PYTHON_API_SECTION } from "./python-api-reference";
 import { PARENT_TEACHER_SECTION } from "./parent-teacher-guide";
 import { KEYBOARD_SHORTCUTS_SECTION } from "./keyboard-shortcuts";
 import { FAQ_SECTION } from "./faq";
+import { ABOUT_SECTION } from "./about";
 
 export const ALL_DOC_SECTIONS: readonly DocSection[] = [
   QUICK_START_SECTION,
@@ -13,6 +14,7 @@ export const ALL_DOC_SECTIONS: readonly DocSection[] = [
   PARENT_TEACHER_SECTION,
   KEYBOARD_SHORTCUTS_SECTION,
   FAQ_SECTION,
+  ABOUT_SECTION,
 ];
 
 export {
@@ -22,4 +24,5 @@ export {
   PARENT_TEACHER_SECTION,
   KEYBOARD_SHORTCUTS_SECTION,
   FAQ_SECTION,
+  ABOUT_SECTION,
 };

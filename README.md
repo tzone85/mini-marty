@@ -1,8 +1,19 @@
 # Mini Marty
 
 [![CI](https://github.com/tzone85/mini-marty/actions/workflows/ci.yml/badge.svg)](https://github.com/tzone85/mini-marty/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftzone85%2Fmini-marty)
+
+> **Fan-made educational re-implementation inspired by [Marty the Robot®](https://robotical.io)
+> by [Robotical Ltd](https://robotical.io). For the full hands-on experience
+> with real hardware, please visit the official web app at
+> [**codemarty.com**](https://codemarty.com).**
+>
+> Mini Marty is **not affiliated with, endorsed by, or sponsored by Robotical Ltd**.
+> "Marty" and "Marty the Robot" are trademarks of Robotical Ltd, used here
+> descriptively to identify the platform that inspired this educational
+> project. See [`docs/ATTRIBUTION.md`](./docs/ATTRIBUTION.md) for the full
+> IP audit.
 
 A virtual programming environment for learning to code with Marty the Robot. No physical robot needed.
 
@@ -62,6 +73,16 @@ Next.js 16 (App Router) + TypeScript + Tailwind. Three.js / React Three Fiber fo
 - [`docs/contributing.md`](./docs/contributing.md) — branch model, code review
 - [`TRAINING.md`](./TRAINING.md) — parent-child learning guide
 
+## Acknowledgements
+
+- **[Robotical Ltd](https://robotical.io)** — for designing and building Marty the Robot, the educational platform that inspired this project. If you enjoy Mini Marty, please support the real thing at [codemarty.com](https://codemarty.com) or [robotical.io](https://robotical.io).
+- **[`robotical/martypy`](https://github.com/robotical/martypy)** (Apache-2.0) — the Python API surface re-implemented here (`walk`, `dance`, `kick`, `slide`, `lean`, `wiggle`, etc.) follows the public method names of Robotical's official `martypy` SDK so that Python written here is portable to the real robot.
+- **[Blockly](https://developers.google.com/blockly)** (Apache-2.0) and **[Scratch 3.0 block color palette](https://en.scratch-wiki.info/wiki/Scratch_Blocks)** — for the visual programming foundation.
+- **[Pyodide](https://pyodide.org)** (Mozilla Public License 2.0) — for running Python in the browser.
+- **[Three.js](https://threejs.org)** / **[React Three Fiber](https://r3f.docs.pmnd.rs)** — for the 3D scene.
+
+See [`docs/ATTRIBUTION.md`](./docs/ATTRIBUTION.md) for the full attribution and IP audit, and [`NOTICE`](./NOTICE) for required redistribution notices.
+
 ## License
 
-MIT
+Apache License 2.0 — see [`LICENSE`](./LICENSE).

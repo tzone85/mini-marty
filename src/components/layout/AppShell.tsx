@@ -2,6 +2,7 @@
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { SkipLink } from "@/components/system/SkipLink";
+import { AttributionFooter } from "./AttributionFooter";
 
 export function AppShell({ children }: { readonly children: React.ReactNode }) {
   return (
@@ -18,6 +19,7 @@ export function AppShell({ children }: { readonly children: React.ReactNode }) {
           {children}
         </main>
       </div>
+      <AttributionFooter />
     </div>
   );
 }

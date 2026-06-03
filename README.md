@@ -15,6 +15,14 @@
 > project. See [`docs/ATTRIBUTION.md`](./docs/ATTRIBUTION.md) for the full
 > IP audit.
 
+## Why I built this
+
+This project was inspired by my son. When he started showing a liking for coding, I went looking for the best way to engage him and meet him at his level on the journey. Marty the Robot — and the official web app at [codemarty.com](https://codemarty.com) — was the closest thing I found to "real code, real motion, instant feedback". Mini Marty is my attempt to recreate that loop in a browser, for nights and weekends when the real robot isn't to hand and for other parents starting the same conversation with their own kids.
+
+If you're on the same journey, please support the real Marty — it's better than this and your child will thank you.
+
+## What it is
+
 A virtual programming environment for learning to code with Marty the Robot. No physical robot needed.
 
 Write Python or drag Blockly blocks; a `VirtualMarty` instance enqueues commands; a React Three Fiber scene animates them at 60 fps.

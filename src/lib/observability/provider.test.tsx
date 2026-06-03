@@ -18,7 +18,12 @@ describe("ObservabilityProvider", () => {
     expect(result.current.reporter).toBe(reporter);
   });
 
-  it("throws if used outside provider", () => {
-    expect(() => renderHook(() => useObservability())).toThrow(/Observability/);
+  it("falls back to noop logger + reporter outside provider", () => {
+    const { result } = renderHook(() => useObservability());
+    expect(typeof result.current.logger.info).toBe("function");
+    expect(typeof result.current.reporter.report).toBe("function");
+    // Smoke: noop calls do not throw and return undefined
+    expect(result.current.logger.info("hello")).toBeUndefined();
+    expect(result.current.reporter.report(new Error("x"))).toBeUndefined();
   });
 });

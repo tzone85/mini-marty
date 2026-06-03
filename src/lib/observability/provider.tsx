@@ -1,6 +1,7 @@
 "use client";
 import { createContext, useContext } from "react";
 import type { Logger, ErrorReporter } from "./types";
+import { noopLogger, noopReporter } from "./noop";
 
 interface Ctx {
   readonly logger: Logger;
@@ -8,6 +9,8 @@ interface Ctx {
 }
 
 const ObservabilityContext = createContext<Ctx | null>(null);
+
+const DEFAULT_CTX: Ctx = { logger: noopLogger, reporter: noopReporter };
 
 export function ObservabilityProvider({
   logger,
@@ -26,9 +29,5 @@ export function ObservabilityProvider({
 }
 
 export function useObservability(): Ctx {
-  const ctx = useContext(ObservabilityContext);
-  if (!ctx) {
-    throw new Error("Observability provider missing — wrap your app");
-  }
-  return ctx;
+  return useContext(ObservabilityContext) ?? DEFAULT_CTX;
 }

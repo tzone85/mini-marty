@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
 
 // Stub Providers so we don't need to set up the full provider chain
 // just to assert layout structure.

@@ -32,4 +32,28 @@ describe("createSafeStorage", () => {
     s.clear();
     expect(s.get()).toBeNull();
   });
+  it("swallows storage errors on set (e.g. quota exceeded / private mode)", () => {
+    const original = Storage.prototype.setItem;
+    Storage.prototype.setItem = () => {
+      throw new DOMException("QuotaExceededError");
+    };
+    try {
+      const s = createSafeStorage("k", schema);
+      expect(() => s.set({ name: "x" })).not.toThrow();
+    } finally {
+      Storage.prototype.setItem = original;
+    }
+  });
+  it("swallows storage errors on clear", () => {
+    const original = Storage.prototype.removeItem;
+    Storage.prototype.removeItem = () => {
+      throw new DOMException("SecurityError");
+    };
+    try {
+      const s = createSafeStorage("k", schema);
+      expect(() => s.clear()).not.toThrow();
+    } finally {
+      Storage.prototype.removeItem = original;
+    }
+  });
 });

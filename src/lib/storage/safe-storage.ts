@@ -24,11 +24,22 @@ export function createSafeStorage<T>(
     },
     set(value: T): void {
       if (typeof window === "undefined") return;
-      window.localStorage.setItem(key, JSON.stringify(value));
+      try {
+        window.localStorage.setItem(key, JSON.stringify(value));
+      } catch {
+        // Quota exceeded, private-browsing restrictions, or storage
+        // disabled: persisting is best-effort, never a hard failure.
+        // (Callers may run inside a React state updater where a throw
+        // would break the render.)
+      }
     },
     clear(): void {
       if (typeof window === "undefined") return;
-      window.localStorage.removeItem(key);
+      try {
+        window.localStorage.removeItem(key);
+      } catch {
+        // Same rationale as set(): storage access can throw.
+      }
     },
   };
 }

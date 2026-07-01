@@ -23,11 +23,9 @@ function getSectionFromHash(): DocSectionId {
 
 export function useDocNavigation() {
   const [activeSection, setActiveSectionState] =
-    useState<DocSectionId>(DEFAULT_SECTION);
+    useState<DocSectionId>(getSectionFromHash);
 
   useEffect(() => {
-    setActiveSectionState(getSectionFromHash());
-
     function handleHashChange() {
       setActiveSectionState(getSectionFromHash());
     }

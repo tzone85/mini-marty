@@ -44,10 +44,7 @@ export interface StatusCommand {
 }
 
 export type MartyCommand =
-  | MovementCommand
-  | JointCommand
-  | SoundCommand
-  | StatusCommand;
+  MovementCommand | JointCommand | SoundCommand | StatusCommand;
 
 export interface QueuedCommand {
   readonly id: string;
@@ -58,10 +55,7 @@ export interface QueuedCommand {
 }
 
 export type MartyEventType =
-  | "commandStart"
-  | "commandComplete"
-  | "commandError"
-  | "statusChange";
+  "commandStart" | "commandComplete" | "commandError" | "statusChange";
 
 export interface CommandStartEvent {
   readonly type: "commandStart";

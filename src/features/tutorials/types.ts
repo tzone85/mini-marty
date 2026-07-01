@@ -6,10 +6,7 @@
  * - "run-program": user must run the program at least once
  */
 export type ValidationKind =
-  | "manual"
-  | "block-count"
-  | "block-type"
-  | "run-program";
+  "manual" | "block-count" | "block-type" | "run-program";
 
 export interface StepValidation {
   readonly kind: ValidationKind;
@@ -26,12 +23,7 @@ export interface TutorialStep {
 }
 
 export type TutorialCategory =
-  | "basics"
-  | "movement"
-  | "sequences"
-  | "loops"
-  | "sensors"
-  | "python";
+  "basics" | "movement" | "sequences" | "loops" | "sensors" | "python";
 
 export type TutorialDifficulty = "beginner" | "intermediate" | "advanced";
 

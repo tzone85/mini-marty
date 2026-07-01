@@ -1,10 +1,5 @@
 export type ExecutionStatus =
-  | "idle"
-  | "running"
-  | "paused"
-  | "stepping"
-  | "error"
-  | "completed";
+  "idle" | "running" | "paused" | "stepping" | "error" | "completed";
 
 export type ExecutionSpeed = "slow" | "normal" | "fast";
 

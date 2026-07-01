@@ -1,9 +1,5 @@
 export type BlockCategory =
-  | "Motion"
-  | "Sound"
-  | "Sensing"
-  | "Events"
-  | "Control";
+  "Motion" | "Sound" | "Sensing" | "Events" | "Control";
 
 export interface MartyBlockDefinition {
   readonly type: string;

@@ -1,11 +1,7 @@
 export type ChallengeDifficulty = "beginner" | "intermediate" | "advanced";
 
 export type ObjectiveKind =
-  | "use-block"
-  | "use-block-count"
-  | "run-program"
-  | "use-loop"
-  | "use-sensor";
+  "use-block" | "use-block-count" | "run-program" | "use-loop" | "use-sensor";
 
 export interface ChallengeObjective {
   readonly id: string;

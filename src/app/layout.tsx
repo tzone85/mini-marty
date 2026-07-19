@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/lib/theme-context";
 import { AppShell } from "@/components/layout/AppShell";
+import { AnalyticsProvider } from "./components/Analytics";
 
 export const metadata: Metadata = {
   title: "Mini Marty",
@@ -19,6 +20,7 @@ export default function RootLayout({
         <ThemeProvider>
           <AppShell>{children}</AppShell>
         </ThemeProvider>
+        <AnalyticsProvider />
       </body>
     </html>
   );
